@@ -48,41 +48,41 @@ e.) Register
 ##
 **Modul Home :**
 ###
-a.)List Buku
+a.) List Buku
 
-b.)Top 10 Weekly
+b.) Top 10 Weekly
 ##
 **Modul Admin :**
 ###
-a.)Add Buku
+a.) Add Buku
 
-b.)Remove
+b.) Remove
 
-c.)Edit
+c.) Edit
 
-d.)Melihat Data Akun User
+d.) Melihat Data Akun User
 
-e.)Hapus Akun User
+e.) Hapus Akun User
 ##
 **Modul Literasi :**
 ###
-a.)Jumlah Buku yang dibaca
+a.) Jumlah Buku yang dibaca
 
-b.)Waktu Baca Perhari
+b.) Waktu Baca Perhari
 
-c.)Library (Reading List) => Tampilan library nya
+c.) Library (Reading List) => Tampilan library nya
 ##
 **Modul Detail Buku :**
 ###
-a.)Views, Likes
+a.) Views, Likes
 
-b.)Review Buku
+b.) Review Buku
 
-c.)Add Bookmark (button-nya)
+c.) Add Bookmark (button-nya)
 
-d.)Rating Buku
+d.) Rating Buku
 
-e.)Sinopsis Buku
+e.) Sinopsis Buku
 </br>
 </details>
 
@@ -109,9 +109,9 @@ e.)Sinopsis Buku
 
 User merupakan pengguna yang sudah melakukan registrasi dan login akun pada aplikasi ini. User memiliki akses penuh terhadap fitur-fitur berikut yang terdapat dalam aplikasi.
 
-Fitur User :
+***Fitur User***
 
-Home Page
+****Home Page****
 
 List Buku
 
@@ -121,7 +121,7 @@ Jumlah Buku yang Sudah dibaca
 
 Jumlah Waktu Membaca
 
-Detail Buku Page
+****Detail Buku Page****
 
 Review Buku
 
@@ -133,7 +133,7 @@ Sinopsis Buku
 
 Add Bookmark
 
-Profile Page
+****Profile Page****
 
 Detail Akun
 
@@ -141,7 +141,7 @@ History Bacaan
 
 Progress Literasi
 
-Library (Bookmark):
+****Library (Bookmark)****
 
 Isinya adalah buku-buku yang telah ditambahkan oleh user ke dalam bookmark.
 ##
@@ -154,11 +154,11 @@ Admin e-library memiliki akses untuk menambahkan buku pada sistem, menghapus buk
 
 Guest merupakan pengguna yang belum melakukan login. Guest hanya dapat mengakses beberapa fitur dalam sistem, yaitu:
 
-Register
+***Register***
 
-Login
+***Login***
 
-Home Page
+***Home Page***
 
 List Buku
 
