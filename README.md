@@ -34,7 +34,7 @@ Aplikasi ini juga dapat membantu user untuk mengetahui buku mana yang sekiranya 
 **_Modul Aplikasi_**
 
 ##
-**Modul Profile:**
+**Modul Profile :**
 ### 
 a.) Data Akun User dan Admin (nama, nomer hp, email, dll)
 
@@ -46,13 +46,13 @@ d.) Login
 
 e.) Register
 ##
-**Modul Home:**
+**Modul Home :**
 ###
 a.)List Buku
 
 b.)Top 10 Weekly
 ##
-**Modul Admin**
+**Modul Admin :**
 ###
 a.)Add Buku
 
@@ -64,7 +64,7 @@ d.)Melihat Data Akun User
 
 e.)Hapus Akun User
 ##
-**Modul Literasi**
+**Modul Literasi :**
 ###
 a.)Jumlah Buku yang dibaca
 
@@ -72,7 +72,7 @@ b.)Waktu Baca Perhari
 
 c.)Library (Reading List) => Tampilan library nya
 ##
-**Modul Detail Buku**
+**Modul Detail Buku :**
 ###
 a.)Views, Likes
 
