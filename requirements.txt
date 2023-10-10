@@ -1,0 +1,11 @@
+django
+gunicorn
+whitenoise
+psycopg2-binary
+requests
+urllib3django
+gunicorn
+whitenoise
+psycopg2-binary
+requests
+urllib3
