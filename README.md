@@ -1,7 +1,7 @@
 TK PBP A-14 (E-Library) 
 #
 <details>
-<Summary>Anggota Kelompok:</summary>
+<Summary>Anggota Kelompok :</summary>
 <br>
 
 Aliyah Faza Qinthara - 2206024726  
@@ -36,11 +36,19 @@ Aplikasi ini juga dapat membantu user untuk mengetahui buku mana yang sekiranya 
 ##
 **Modul Profile :**
 ### 
-a.) Data Akun User dan Admin (nama, nomer hp, email, dll)
+a.) Reading List (bisa diakses oleh user lain)
 
 b.) History Bacaan
 
 c.) Progress Literasi
+##
+**Modul Authentication :**
+###
+a.) Data Akun User dan Admin (nama, nomer hp, email, dll)
+
+b.) Login
+
+c.) Register
 ##
 **Modul Home :**
 ###
@@ -48,9 +56,7 @@ a.) List Buku
 
 b.) Top 10 Weekly
 
-c.) Login
-
-d.) Register
+c.) Search Bar
 ##
 **Modul Admin :**
 ###
@@ -121,11 +127,13 @@ Jumlah Buku yang Sudah dibaca
 
 Jumlah Waktu Membaca
 
+Search User Lain
+
 ****Detail Buku Page****
 
 Review Buku
 
-Views dan Like Buku
+Views, Like Buku, dan Add Comment
 
 Rating Buku
 
@@ -140,6 +148,8 @@ Detail Akun
 History Bacaan
 
 Progress Literasi
+
+Reading List Public
 
 ****Library (Bookmark)****
 
