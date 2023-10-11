@@ -41,16 +41,16 @@ a.) Data Akun User dan Admin (nama, nomer hp, email, dll)
 b.) History Bacaan
 
 c.) Progress Literasi
-
-d.) Login
-
-e.) Register
 ##
 **Modul Home :**
 ###
 a.) List Buku
 
 b.) Top 10 Weekly
+
+c.) Login
+
+d.) Register
 ##
 **Modul Admin :**
 ###
