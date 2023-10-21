@@ -42,8 +42,11 @@
             </ul>
         </div>
         {% if request.user.is_authenticated %}
+        <a href="">
+            <button id="btn-login" type="button" class="btn btn-primary">Profile</button>
+        </a>
         <a href="{% url 'authentication:logout' %}">
-            <button id="btn-logout" type="button" class="btn btn-primary">Log out</button>
+            <button id="btn-logout" type="button" class="btn btn-danger">Log out</button>
         </a>
         {% else %}
         <div>
