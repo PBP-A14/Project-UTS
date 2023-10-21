@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<body>
+    <div class="centered-container">
+        <table id="book_table"></table>
+    </div>
+</body>
+
+<script>
+    async function getProducts() {
+        return fetch("{% url 'home:get_book_json' %}").then((res) => res.json())
+    }
+
+    async function refreshProducts() {
+        document.getElementById("book_table").innerHTML = ""
+        const book = await getProducts()
+        let htmlString = `<tr>
+            <th>Book Name</th>
+            <th>Rating</th>
+            <th></th>
+        </tr>`
+        book.forEach((item) => {
+            htmlString += `\n<tr>
+            <td>${item.fields.title}</td>
+            <td>${item.fields.rating}</td>
+            <td><button class="btn btn-primary btn-sm">Detail</button></td>
+        </tr>`
+        })
+
+        document.getElementById("book_table").innerHTML = htmlString
+    }
+
+    refreshProducts()
+</script>
+{% endblock content %}
