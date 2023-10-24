@@ -47,13 +47,14 @@
             </ul>
         </div>
         {% if request.user.is_authenticated %}
+        {% url 'my_profile:user_profile' as profile_url %}
         <span class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 Hi, {{ request.user.username }}
             </a>
             <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="">Profile</a>
+                <a class="dropdown-item" href="{{ profile_url }}">Profile</a>
                 <a class="dropdown-item" href="{% url 'authentication:logout' %}">Log out</a>
             </div>
         </span>
