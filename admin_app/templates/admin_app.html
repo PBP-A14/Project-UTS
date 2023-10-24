@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .centered-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .card-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+</style>
+
+<body style="text-align: center;">
+    <br></br>
+    <br></br>
+    <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="width: 20rem">
+        <input type="radio" class="btn-check" name="btnradio" id="books" autocomplete="off" checked>
+        <label class="btn btn-outline-primary" for="books">Books</label>
+      
+        <input type="radio" class="btn-check" name="btnradio" id="users" autocomplete="off">
+        <label class="btn btn-outline-primary" for="users">Users</label>
+    </div>
+    <br><br>
+    <div class="centered-container">
+        <div id="book_card"></div>
+    </div>
+
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addModalLabel">Add New Book</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form" onsubmit="return false;">
+                      {% csrf_token %}
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="title" name="title" placeholder="Title"></input>
+                        <label for="title" class="col-form-label">Title</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <textarea class="form-control" id="description" name="description" placeholder="Description"></textarea>
+                        <label for="description" class="col-form-label">Description</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="authors" name="authors" placeholder="Authors"></input>
+                        <label for="authors" class="col-form-label">Authors</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="isbn" name="isbn" placeholder="ISBN"></input>
+                        <label for="isbn" class="col-form-label">ISBN</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="num_pages" name="num_pages" placeholder="Number of pages"></input>
+                        <label for="num_pages" class="col-form-label">Number of pages</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="publisher" name="publisher" placeholder="Publisher"></input>
+                        <label for="publisher" class="col-form-label">Publisher</label>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Book</button>
+                  </div>
+            </div>
+        </div>
+      </div>
+      <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editModalLabel">Edit Book</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-form" onsubmit="return false;" action="">
+                      {% csrf_token %}
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="title" name="title-edit" placeholder="Title"></input>
+                        <label for="title" class="col-form-label">Title</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <textarea class="form-control" id="description" name="description-edit" placeholder="Description"></textarea>
+                        <label for="description" class="col-form-label">Description</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="authors" name="authors-edit" placeholder="Authors"></input>
+                        <label for="authors" class="col-form-label">Authors</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="isbn" name="isbn-edit" placeholder="ISBN"></input>
+                        <label for="isbn" class="col-form-label">ISBN</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="num_pages" name="num_pages-edit" placeholder="Number of pages"></input>
+                        <label for="num_pages" class="col-form-label">Number of pages</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="publisher" name="publisher-edit" placeholder="Publisher"></input>
+                        <label for="publisher" class="col-form-label">Publisher</label>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" id="button_edit" data-bs-dismiss="modal">Edit Book</button>
+                  </div>
+            </div>
+        </div>
+      </div>
+</body>
+
+<script>
+    async function getProducts() {
+        return fetch("{% url 'home:get_book_json' %}").then((res) => res.json())
+    }
+
+    async function getUsers() {
+        return fetch("{% url 'admin_app:get_user_json' %}").then((res) => res.json())
+    }
+
+    async function refreshProducts() {
+        document.getElementById("book_card").innerHTML = ""
+        const book = await getProducts()
+        let htmlString = `<h3>Book Collection</h3><br>
+                        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
+                            Add New Book
+                        </button>
+                        <div class="card-row">`;
+        let cardCount = 0;
+
+        book.forEach((item) => {
+            htmlString += `\n<div class="card" style="width: 16rem; margin: 10px;">
+                <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-L.jpg" alt="Card image cap" style="width: 100%; height: 400px; object-fit: cover;">
+                <div class="card-body">
+                    <p class="card-text"><b>${item.fields.title}</b></p>
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-warning my-2 px-3" data-bs-toggle="modal" data-bs-target="#editModal" data-book-id="${item.pk}">
+                        Edit
+                    </button>
+                    <button class="btn btn-danger my-2 px-3 delete-btn delete_book" data-book-id="${item.pk}"> 
+                        Delete
+                    </button>
+                </div>
+            </div>`;
+
+            cardCount++;
+            if (cardCount === 4) { 
+                htmlString += '</div><div class="card-row">';
+                cardCount = 0;
+            }
+        });
+
+        htmlString += '</div>';
+
+        document.getElementById("book_card").innerHTML = htmlString;
+    }
+
+    async function refreshUsers() {
+        document.getElementById("book_card").innerHTML = ""
+        const users = await getUsers()
+        let htmlAdmin = `<h3>Admins</h3><br>`;
+        let htmlUser = `\n<br><h3>Users</h3><br>`;
+
+        users.forEach((item) => {
+            const lastLogin = item.fields.last_login ? item.fields.last_login.slice(0, 10) : "Never";
+            if (item.fields.is_staff) {
+                htmlAdmin += `\n<div class="card" style="width: 16rem; margin: 10px; display: inline-block;">
+                    <div class="card-header"><h5 class="card-title">${item.fields.username}</h5></div>
+                    <div class="card-body">
+                    <h6 class="card-title">Date Joined: ${item.fields.date_joined.slice(0, 10)}</h6>
+                    <h6 class="card-title">Last Login: ${lastLogin}</h6>
+                    </div>
+                    <div class="card-footer">
+                    <button class="btn btn-danger my-2 px-3 delete-btn delete_user" data-user-id="${item.pk}"> 
+                        Delete
+                    </button>
+                    </div>
+                </div>`;
+            } else {
+                htmlUser += `\n<div class="card" style="width: 16rem; margin: 10px; display: inline-block;">
+                    <div class="card-header"><h5 class="card-title">${item.fields.username}</h5></div>
+                    <div class="card-body">
+                    <h6 class="card-title">Date Joined: ${item.fields.date_joined.slice(0, 10)}</h6>
+                    <h6 class="card-title">Last Login: ${lastLogin}</h6>
+                    </div>
+                    <div class="card-footer">
+                    <button class="btn btn-danger my-2 px-3 delete-btn delete_user" data-user-id="${item.pk}"> 
+                        Delete
+                    </button>
+                    </div>
+                </div>`;
+            }
+        });
+
+        document.getElementById("book_card").innerHTML = htmlAdmin + `<br>` + htmlUser;
+    }
+
+    document.addEventListener("DOMContentLoaded",  function() {
+        document.getElementById("books").onchange = function(){
+            if(document.getElementById("books").checked){
+                refreshProducts();
+            }
+        };
+        document.getElementById("users").onchange = function(){
+            if(document.getElementById("users").checked){
+                refreshUsers();
+            }
+        };
+    });
+    refreshProducts()
+
+    function addProduct() {
+        fetch("{% url 'admin_app:add_book' %}", {
+            method: "POST",
+            body: new FormData(document.querySelector('#form'))
+        }).then(refreshProducts)
+        document.getElementById("form").reset()
+        return false
+    }
+    document.getElementById("button_add").onclick = addProduct
+
+    $('#editModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget);
+        const bookId = button.data('book-id');
+
+        $.ajax({
+            url: `/admin_app/edit_book/${bookId}/`,
+            method: 'GET',
+            success: function(data) {
+                $("[name='title-edit']").val(data.title);
+                $("[name='description-edit']").val(data.description);
+                $("[name='authors-edit']").val(data.authors);
+                $("[name='isbn-edit']").val(data.isbn);
+                $("[name='num_pages-edit']").val(data.num_pages);
+                $("[name='publisher-edit']").val(data.publisher);
+
+                $('#edit-form').attr('action', `{% url 'admin_app:edit_book' 0 %}`.replace(/0/, bookId));
+            }
+        });
+  });
+
+  function editProduct() {
+    fetch($('#edit-form').attr('action'), {
+        method: "POST",
+        body: new FormData(document.querySelector('#edit-form'))
+    }).then(refreshProducts)
+    return false
+    }
+  document.getElementById("button_edit").onclick = editProduct
+    
+
+  document.addEventListener('DOMContentLoaded', function () {
+    $('#book_card').on('click', '.delete_book', async function() {
+          var bookId = $(this).data('book-id');
+          if (confirm('Are you sure you want to delete this book?')) {
+            fetch("{% url 'admin_app:delete_book' 0 %}".replace(/0/, bookId), {
+                method: "DELETE",
+            }).then(refreshProducts)
+            return false
+          }
+      });
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    $('#book_card').on('click', '.delete_user', async function() {
+          var userId = $(this).data('user-id');
+          if (confirm('Are you sure you want to delete this user?')) {
+            fetch("{% url 'admin_app:delete_user' 0 %}".replace(/0/, userId), {
+                method: "DELETE",
+            }).then(refreshUsers)
+            return false
+          }
+      });
+  });
+</script>
+{% endblock content %}
