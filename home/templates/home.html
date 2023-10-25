@@ -1,37 +1,67 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
 <style>
     .centered-container {
         display: flex;
         justify-content: center;
-        align-items: center;
+        height: 100%;
     }
 
-    .card-row {
-        display: flex;
-        flex-wrap: wrap;
+    .card-container {
+        display: grid;
+        gap: 10px;
+        justify-items: center;
+        width: 100%;
+        margin: 0 10vw;
     }
 
     .card {
-        width: 8rem;
-        margin: 10px;
+        width: 100%;
     }
 
-    .card-text {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
+    .card-img-top {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    @media (min-width: 1200px) {
+        .card-container {
+            grid-template-columns: repeat(7, 1fr);
+        }
+    }
+
+    @media (min-width: 992px) and (max-width: 1199px) {
+        .card-container {
+            grid-template-columns: repeat(6, 1fr);
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 991px) {
+        .card-container {
+            grid-template-columns: repeat(5, 1fr);
+        }
+    }
+
+    @media (max-width: 767px) {
+        .card-container {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    @media (max-width: 576px) and (max-width: 767px) {
+        .card-container {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
 </style>
 
+
 <body>
-    <br></br>
-    <br></br>
-    <h3 class="text-center">Our Book Collection</h3>
     <div class="centered-container">
-        <div id="book_card"></div>
+        <div id="book_card" class="card-container"></div>
     </div>
 </body>
 
@@ -41,34 +71,26 @@
     }
 
     async function refreshProducts() {
-        document.getElementById("book_card").innerHTML = ""
-        const book = await getProducts()
-        let htmlString = '<div class="card-row">';
-        let cardCount = 0;
+    const cardContainer = document.querySelector(".card-container");
+    cardContainer.innerHTML = "";
 
-        book.forEach((item) => {
-            const rating = item.fields.rating_count === 0 ? "No Rating" : item.fields.rating;
-            htmlString += `\n<div class="card"">
-                <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-M.jpg" alt="Card image cap" style="width: 100%; height: 200px; object-fit: cover;">
-                <div class="card-body">
-                    <p class="card-text"><b>${item.fields.title}</b></p>
-                    <p class="card-text">${rating}</p>
-                    <a href="#" class="btn btn-primary">Detail</a>
-                </div>
-            </div>`;
+    const book = await getProducts();
+    let htmlString = "";
+    book.forEach((item) => {
+        htmlString += `\n<div class="card">
+            <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-M.jpg" alt="Card image cap">
+            <div class="card-body">
+                <p class="card-text">${item.fields.title}</p>
+                <a href="#" class="btn btn-primary">Detail</a>
+            </div>
+        </div>`;
+    });
 
-            cardCount++;
-            if (cardCount === 7) {
-                htmlString += '</div><div class="card-row">';
-                cardCount = 0;
-            }
-        });
+    cardContainer.innerHTML = htmlString;
+}
 
-        htmlString += '</div>';
+refreshProducts();
 
-        document.getElementById("book_card").innerHTML = htmlString;
-    }
 
-    refreshProducts()
 </script>
 {% endblock content %}
