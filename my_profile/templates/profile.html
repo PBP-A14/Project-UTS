@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>My Profile</h1>
+    <h2>Reading List</h2>
+    <ul>
+        {% for book in user.userprofile.reading_list.all %}
+            <li>{{ book.title }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>History Bacaan</h2>
+    <ul>
+        {% for book in user.userprofile.history_bacaan.all %}
+            <li>{{ book.title }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Progress Literasi</h2>
+    <p>{{ user.userprofile.progress_literasi }}%</p>
+{% endblock content %}
