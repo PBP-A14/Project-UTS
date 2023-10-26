@@ -117,44 +117,66 @@
   </ul>
 </div>
 
-
 <script>
-  // JavaScript untuk menampilkan tanggal dan waktu aktif realtime
   document.addEventListener("DOMContentLoaded", function() {
-      var dateElement = document.getElementById("realtime-date");
-      var activityElement = document.getElementById("realtime-activity");
-      
-      var intervalId; // Simpan ID interval dalam variabel global
-  
-      // Fungsi untuk mengupdate tanggal dan waktu aktif secara periodik
-      function updateRealtimeData() {
-          var now = new Date();
-          var dateString = now.toLocaleDateString();
-          var timeString = now.toLocaleTimeString();
-  
-          dateElement.textContent = dateString;
-          activityElement.textContent = timeString;
-      }
-  
-      // Memanggil fungsi updateRealtimeData setiap detik
-      intervalId = setInterval(updateRealtimeData, 1000);
-      
-      // Saat pengguna logout, hentikan interval
-      function handleLogout() {
-          clearInterval(intervalId);
-      }
-  
-      // Memanggil fungsi updateRealtimeData untuk pertama kali
-      updateRealtimeData();
-      
-      // Contoh: panggil handleLogout saat pengguna logout
-      // Gantilah dengan cara yang sesuai dengan aplikasi Anda
-      document.getElementsById("btn-logout").addEventListener("click", function() {
-          handleLogout();
-      });
-  });
-  </script>
+    var dateElement = document.getElementById("realtime-date")
+    var activityElement = document.getElementById("realtime-activity");
+    var loginTimestamp = loginTimestamp = localStorage.getItem("loginTimestamp");
 
+    // Fungsi untuk mengupdate waktu aktif sebagai timer
+    function updateActivityTimer() {
+      var now = new Date();
+      var dateString = now.toLocaleDateString();
+      var currentTime = Date.now();
+      var elapsedTime = Math.floor((currentTime - loginTimestamp) / 1000); // Calculate elapsed time in seconds
+
+      if (!loginTimestamp) {
+            // Jika loginTimestamp belum ada, inisialisasi dengan waktu saat ini
+            loginTimestamp = currentTime;
+            localStorage.setItem("loginTimestamp", loginTimestamp);
+      }
+
+      // Cek apakah selisih waktu lebih dari satu hari (86400 detik)
+      if (elapsedTime > 86400) {
+          // Jika lebih dari satu hari, inisialisasi waktu dari awal
+          loginTimestamp = currentTime;
+          localStorage.setItem("loginTimestamp", loginTimestamp);
+          elapsedTime = 0;
+      }
+
+      // Konversi waktu ke format jam:menit:detik
+      var hours = Math.floor(elapsedTime / 3600);
+      var minutes = Math.floor((elapsedTime % 3600) / 60);
+      var seconds = elapsedTime % 60;
+
+      // Format waktu
+      var timeString = hours.toString().padStart(2, '0') + ':' +
+                      minutes.toString().padStart(2, '0') + ':' +
+                      seconds.toString().padStart(2, '0');
+      activityElement.textContent = timeString;
+      dateElement.textContent = dateString;
+    }
+
+    // Memanggil fungsi updateActivityTimer setiap detik
+    var timerIntervalId = setInterval(updateActivityTimer, 1000);
+
+    // Saat pengguna logout, hentikan interval
+    function handleLogout() {
+        clearInterval(timerIntervalId);
+    }
+
+    // Memanggil fungsi updateActivityTimer untuk pertama kali
+    updateActivityTimer();
+
+    // Contoh: panggil handleLogout saat pengguna logout
+    // Gantilah dengan cara yang sesuai dengan aplikasi Anda
+    document.getElementById("btn-logout").addEventListener("click", function() {
+        handleLogout();
+    });
+  });
+
+  </script>
+  
 <script>
   // Data waktu aktif harian (contoh)
   const waktuAktifHarian = { waktu_aktif_harian };
