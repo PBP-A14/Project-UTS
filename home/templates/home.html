@@ -1,67 +1,54 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
 <style>
-    .centered-container {
-        display: flex;
-        justify-content: center;
-        height: 100%;
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
     }
 
-    .card-container {
-        display: grid;
-        gap: 10px;
-        justify-items: center;
-        width: 100%;
-        margin: 0 10vw;
+    body {
+        background-color: #f1f1f1;
+        padding-top: 60px;
     }
 
     .card {
-        width: 100%;
+        border: none;
     }
 
     .card-img-top {
-        width: 100%;
-        height: auto;
+        height: 30vh;
         object-fit: cover;
+        border-radius: 8px;
     }
 
-    @media (min-width: 1200px) {
-        .card-container {
-            grid-template-columns: repeat(7, 1fr);
-        }
+    .card-body {
+        display: flex;
+        flex-direction: column;
     }
 
-    @media (min-width: 992px) and (max-width: 1199px) {
-        .card-container {
-            grid-template-columns: repeat(6, 1fr);
-        }
+    .card-body .btn {
+        width: 100%;
+        background-color: #474747;
+        border: none;
+        color: #fff;
     }
 
-    @media (min-width: 768px) and (max-width: 991px) {
-        .card-container {
-            grid-template-columns: repeat(5, 1fr);
-        }
-    }
-
-    @media (max-width: 767px) {
-        .card-container {
-            grid-template-columns: repeat(4, 1fr);
-        }
-    }
-
-    @media (max-width: 576px) and (max-width: 767px) {
-        .card-container {
-            grid-template-columns: repeat(2, 1fr);
-        }
+    /* Add margin-top to the rating */
+    .card-text {
+        margin-top: auto;
     }
 </style>
 
-
 <body>
-    <div class="centered-container">
-        <div id="book_card" class="card-container"></div>
+    <div class="container py-5">
+        <input type="search" class="form-control mb-3" placeholder="Search...">
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-6 g-4 py-5" id="book_card">
+
+        </div>
+
     </div>
 </body>
 
@@ -71,26 +58,28 @@
     }
 
     async function refreshProducts() {
-    const cardContainer = document.querySelector(".card-container");
-    cardContainer.innerHTML = "";
+        document.getElementById("book_card").innerHTML = ""
+        const book = await getProducts()
+        let htmlString = ""
+        book.forEach((item) => {
+            const title = item.fields.title.length >= 50 ? `${item.fields.title.substring(0, 50)}...` : item.fields.title;
+            const rating = item.fields.rating_count === 0 ? "No rating" : `Rating: ${item.fields.rating}`;
+            htmlString += `\n
+            <div class="col">
+                <div class="card h-100">
+                    <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-M.jpg" alt="Card image cap">
+                    <div class="card-body">
+                        <p class="card-text text-center"><b>${title}</b></p>
+                        <p class="card-text text-center">${rating}</p>
+                        <button class="btn">Read</button>
+                    </div>
+                </div>
+            </div>`
+        })
 
-    const book = await getProducts();
-    let htmlString = "";
-    book.forEach((item) => {
-        htmlString += `\n<div class="card">
-            <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-M.jpg" alt="Card image cap">
-            <div class="card-body">
-                <p class="card-text">${item.fields.title}</p>
-                <a href="#" class="btn btn-primary">Detail</a>
-            </div>
-        </div>`;
-    });
+        document.getElementById("book_card").innerHTML = htmlString
+    }
 
-    cardContainer.innerHTML = htmlString;
-}
-
-refreshProducts();
-
-
+    refreshProducts()
 </script>
 {% endblock content %}
