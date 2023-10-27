@@ -24,4 +24,5 @@ urlpatterns = [
     path('my_profile', include ('my_profile.urls')),
     path('admin_app/', include('admin_app.urls')),
     path('progress_literasi/', include('progress_literasi.urls')),
+    path('my_library/', include('my_library.urls')),
 ]
