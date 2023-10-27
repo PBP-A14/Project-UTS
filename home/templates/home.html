@@ -39,7 +39,7 @@
     async function getProducts() {
         return fetch("{% url 'home:get_book_json' %}").then((res) => res.json())
     }
-
+    
     async function refreshProducts() {
         document.getElementById("book_card").innerHTML = ""
         const book = await getProducts()
