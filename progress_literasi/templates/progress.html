@@ -95,7 +95,7 @@
       <li>
         <strong>Tanggal:</strong>
         <span id="realtime-date"></span> 
-        <strong>Waktu Aktif:</strong>
+        <strong>Waktu Aktif: {{ elapsed_time }}</strong>
         <span id="realtime-activity"></span> 
       </li>
     </ul>
@@ -114,7 +114,7 @@
   document.addEventListener("DOMContentLoaded", function() {
     var dateElement = document.getElementById("realtime-date")
     var activityElement = document.getElementById("realtime-activity");
-    var loginTimestamp = loginTimestamp = localStorage.getItem("loginTimestamp");
+    var loginTimestamp = localStorage.getItem("loginTimestamp");
 
     // Fungsi untuk mengupdate waktu aktif sebagai timer
     function updateActivityTimer() {

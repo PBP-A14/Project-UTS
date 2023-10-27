@@ -1,28 +1,14 @@
-from datetime import datetime
+from datetime import date, datetime
 from django.shortcuts import render
-from django.urls import reverse
 
-from django.views import View
-from .models import Book, ProgressBaca, TargetHarian, BukuDibaca, AktivitasUser, BukuDibaca
+from .models import ProgressBaca, TargetHarian, AktivitasUser
 from .forms import DailyTargetForm
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.http import HttpResponseRedirect, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from .models import AktivitasUser
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
 from django.http import HttpResponse, JsonResponse
 from my_profile.models import UserProfile
-
-@csrf_exempt
-@login_required
-def buku_list(request):
-    buku_list = Book.objects.all()
-    user = request.user
-    progress_user = ProgressBaca.objects.filter(user=user)
-    target_user = TargetHarian.objects.filter(user=user)
-    return render(request, 'progress.html', {'buku_list': buku_list, 'progress_user': progress_user, 'target_user': target_user})
 
 @login_required
 def set_target(request):
@@ -33,7 +19,12 @@ def set_target(request):
 
             # Pastikan UserProfile terkait dengan pengguna (User) ada
             user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+            if user_profile.last_target_date != date.today() :
+                user_profile.target_buku = None
+            
             user_profile.target_buku = target_buku
+            user_profile.last_target_date = date.today()
             user_profile.save()
 
             request.session['daily_target'] = target_buku
@@ -56,6 +47,7 @@ def progress(request):
     context = {
         'waktu_aktif_harian': waktu_aktif_harian,
         'target_buku' : target_buku,
+        # 'active_time' : user_profile.active_time.total_seconds(),
     }
 
     return render(request, 'progress.html', context)
@@ -73,12 +65,6 @@ def track_user_activity(request):
 
         return JsonResponse({'status': 'sukses'})
     return HttpResponse(status=400)
-
-@login_required
-def history_buku(request):
-    user = request.user
-    buku_dibaca = BukuDibaca.objects.filter(user=user)
-    return render(request, 'history_buku.html', {'buku_dibaca': buku_dibaca})
 
 def realtime_data(request):
     # Periksa apakah pengguna login
