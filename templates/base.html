@@ -66,6 +66,18 @@
             </div>
         </span>
 
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+              var logoutButton = document.getElementById("btn-logout");
+              if (logoutButton) {
+                logoutButton.addEventListener("click", function() {
+                  console.log("logout");
+                  handleLogout();
+                });
+              }
+            });
+          </script>
+
         {% else %}
         <div>
             <a href="{% url 'authentication:login' %}">

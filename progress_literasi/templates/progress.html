@@ -19,7 +19,6 @@
     margin-top: 15px
   }
 
-  /* Gaya untuk daftar ul dan li */
   ul {
     list-style: none;
   }
@@ -31,7 +30,6 @@
     color: #555;
   }
 
-  /* Gaya untuk tombol */
   a.btn-target {
     background-color: #0077cc;
     color: #fff;
@@ -109,7 +107,6 @@
       <li>{{ buku.buku.judul }} - {{ buku.tanggal_dibaca }}</li>
     {% endfor %}
   </ul>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -127,17 +124,17 @@
       var elapsedTime = Math.floor((currentTime - loginTimestamp) / 1000); // Calculate elapsed time in seconds
 
       if (!loginTimestamp) {
-            // Jika loginTimestamp belum ada, inisialisasi dengan waktu saat ini
-            loginTimestamp = currentTime;
-            localStorage.setItem("loginTimestamp", loginTimestamp);
+        // Jika loginTimestamp belum ada, inisialisasi dengan waktu saat ini
+        loginTimestamp = currentTime;
+        localStorage.setItem("loginTimestamp", loginTimestamp);
       }
 
       // Cek apakah selisih waktu lebih dari satu hari (86400 detik)
       if (elapsedTime > 86400) {
-          // Jika lebih dari satu hari, inisialisasi waktu dari awal
-          loginTimestamp = currentTime;
-          localStorage.setItem("loginTimestamp", loginTimestamp);
-          elapsedTime = 0;
+        // Jika lebih dari satu hari, inisialisasi waktu dari awal
+        loginTimestamp = currentTime;
+        localStorage.setItem("loginTimestamp", loginTimestamp);
+        elapsedTime = 0;
       }
 
       // Konversi waktu ke format jam:menit:detik
@@ -153,22 +150,23 @@
       dateElement.textContent = dateString;
     }
 
-    // Memanggil fungsi updateActivityTimer setiap detik
     var timerIntervalId = setInterval(updateActivityTimer, 1000);
 
-    // Saat pengguna logout, hentikan interval
     function handleLogout() {
-        clearInterval(timerIntervalId);
+      clearInterval(timerIntervalId);
+
     }
 
-    // Memanggil fungsi updateActivityTimer untuk pertama kali
+    var logoutButton = document.getElementById("btn-logout");
+      if (logoutButton) {
+        logoutButton.addEventListener("click", function() {
+          console.log("logout bang")
+          handleLogout();
+        });
+      }
+
     updateActivityTimer();
 
-    // Contoh: panggil handleLogout saat pengguna logout
-    // Gantilah dengan cara yang sesuai dengan aplikasi Anda
-    document.getElementById("btn-logout").addEventListener("click", function() {
-        handleLogout();
-    });
   });
 
   </script>

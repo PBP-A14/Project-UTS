@@ -1,5 +1,5 @@
-from datetime import datetime, timezone
-from django.shortcuts import render, redirect
+from datetime import datetime
+from django.shortcuts import render
 from django.urls import reverse
 
 from django.views import View
@@ -13,6 +13,7 @@ from .models import AktivitasUser
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse, JsonResponse
+from my_profile.models import UserProfile
 
 @csrf_exempt
 @login_required
@@ -29,11 +30,11 @@ def set_target(request):
         form = DailyTargetForm(request.POST)
         if form.is_valid():
             target_buku = form.cleaned_data['target_buku']
-            # Simpan target harian ini ke sesi pengguna atau model yang sesuai
 
-            # Buat objek TargetHarian dan simpan ke database
-            target_harian = TargetHarian(user=request.user, target_buku=target_buku, tanggal=datetime.now())
-            target_harian.save()
+            # Pastikan UserProfile terkait dengan pengguna (User) ada
+            user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+            user_profile.target_buku = target_buku
+            user_profile.save()
 
             request.session['daily_target'] = target_buku
 
@@ -48,14 +49,13 @@ def progress(request):
     user = request.user
     # Ambil data aktivitas pengguna yang saat ini login
     aktivitas_user = AktivitasUser.objects.filter(user=user).order_by('-tanggal')[:7]
-    # daily_target = request.session.get('daily_target', 0)
-    # daily_target = request.COOKIES.get('daily_target', None)
-    # Ekstrak waktu aktif dari setiap entri aktivitas
     waktu_aktif_harian = [aktivitas.waktu_aktif for aktivitas in aktivitas_user]
+    user_profile = UserProfile.objects.get(user=request.user)
+    target_buku = user_profile.target_buku
 
     context = {
         'waktu_aktif_harian': waktu_aktif_harian,
-        # 'daily_target' : daily_target,
+        'target_buku' : target_buku,
     }
 
     return render(request, 'progress.html', context)

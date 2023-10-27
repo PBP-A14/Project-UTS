@@ -6,3 +6,4 @@ class UserProfile(models.Model):
     reading_list = models.ManyToManyField('home.Book', related_name='readers', blank=True)
     history_bacaan = models.ManyToManyField('home.Book', related_name='readers_history', blank=True)
     progress_literasi = models.PositiveIntegerField(default=0)
+    target_buku = models.PositiveIntegerField(default=0)
