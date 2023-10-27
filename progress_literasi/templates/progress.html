@@ -56,6 +56,38 @@
     margin-top: 10px;
   }
 
+  button#update-target-button {
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 30px;
+    margin-top: 10px;
+  }
+
+  button#save-target-button {
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-top: 0px;
+  }
+
+  #target-input-container {
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 20px;
+    margin-top: 0px;
+  }
+
 </style>
 
   <h1>Progress Literasi Anda</h1>
@@ -68,12 +100,22 @@
   <h2>Target Baca Harian Anda</h2>
   <ul>
     {% if target_buku %}
-      <li>Anda ingin membaca {{ target_buku }} buku hari ini.</li>
+      <li>Anda ingin membaca <span id="target-buku">{{ target_buku }}</span> buku hari ini.</li>
+      <div id="target-message"></div>
     {% else %}
       <li>Anda belum menetapkan target harian.</li>
     {% endif %}
   </ul>
-  <a class ="btn-target" href="{% url 'progress_literasi:set_target' %}">Set Target Harian</a>
+  {% if target_buku %}
+    <button id="update-target-button">Ubah Target</button>
+    <div id="target-input-container" style="display: none;">
+      <input type="number" id="new-target-input" placeholder="Masukkan target baru">
+      <button id="save-target-button">Simpan</button>
+    </div>
+  {% else %}
+    <a class="btn-target" href="{% url 'progress_literasi:set_target' %}">Set Target Harian</a>
+  {% endif %}
+
 
   <h2>Waktu Aktif Pengguna</h1>
   <p class="d-inline-flex gap-1">
@@ -109,6 +151,67 @@
   </ul>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var updateTargetButton = document.getElementById("update-target-button");
+    var targetInputContainer = document.getElementById("target-input-container");
+    var newTargetInput = document.getElementById("new-target-input");
+    var saveTargetButton = document.getElementById("save-target-button");
+    var targetMessage = document.getElementById("target-message");
+
+    // Menambahkan event listener ke tombol "Ubah Target"
+    updateTargetButton.addEventListener("click", function() {
+      updateTargetButton.style.display = "none";
+      targetInputContainer.style.display = "block";
+    });
+
+    // Menambahkan event listener ke tombol "Simpan"
+    saveTargetButton.addEventListener("click", function() {
+      var newTarget = newTargetInput.value;
+
+      // Kirim permintaan AJAX untuk memperbarui target harian
+      var formData = new FormData();
+      formData.append("target_buku", newTarget);
+
+      fetch("{% url 'progress_literasi:update_target' %}", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+      })
+        .then(function(response) {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Gagal memperbarui target harian.");
+          }
+        })
+        .then(function(data) {
+          // Tampilkan pesan hasil
+          targetMessage.textContent = "Target harian berhasil diperbarui!";
+          // Perbarui tampilan target harian di halaman
+          var targetDisplay = document.querySelector("#target-buku");
+          targetDisplay.textContent = newTarget;
+          // Sembunyikan kembali input target setelah mengirim permintaan
+          targetInputContainer.style.display = "none";
+          updateTargetButton.style.display = "block";
+        })
+        .catch(function(error) {
+          // Tampilkan pesan kesalahan
+          targetMessage.textContent = "Terjadi kesalahan: " + error.message;
+        });
+    });
+
+    // Fungsi untuk mendapatkan nilai token CSRF
+    function getCookie(name) {
+      var value = `; ${document.cookie}`;
+      var parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+  });
+</script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {

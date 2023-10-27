@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from .models import AktivitasUser
 from django.contrib.auth.decorators import login_required
 from my_profile.models import UserProfile
+from django.http import JsonResponse
 
 @login_required
 def set_target(request):
@@ -39,3 +40,25 @@ def progress(request):
     }
 
     return render(request, 'progress.html', context)
+
+@login_required
+def update_target(request):
+    if request.method == 'POST':
+        target_buku = request.POST.get('target_buku')
+        
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        update_target = request.POST.get('update_target')
+        if target_buku is None:
+            target_buku = 0
+        
+        if update_target == '0':
+            user_profile.target_buku = 0
+        
+        user_profile.target_buku = target_buku
+        user_profile.save()
+
+        response_data = {'status': 'success', 'message': 'Target harian berhasil diperbarui.'}
+        return JsonResponse(response_data)
+    
+    response_data = {'status': 'error', 'message': 'Permintaan tidak valid.'}
+    return JsonResponse(response_data)
