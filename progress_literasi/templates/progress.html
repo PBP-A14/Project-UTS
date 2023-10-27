@@ -114,8 +114,9 @@
   document.addEventListener("DOMContentLoaded", function() {
     var dateElement = document.getElementById("realtime-date")
     var activityElement = document.getElementById("realtime-activity");
-    var loginTimestamp = localStorage.getItem("loginTimestamp");
-
+    var userId = "{{ user.id }}";
+    var loginTimestamp = localStorage.getItem("loginTimestamp_" + userId);
+    
     // Fungsi untuk mengupdate waktu aktif sebagai timer
     function updateActivityTimer() {
       var now = new Date();
@@ -126,7 +127,7 @@
       if (!loginTimestamp) {
         // Jika loginTimestamp belum ada, inisialisasi dengan waktu saat ini
         loginTimestamp = currentTime;
-        localStorage.setItem("loginTimestamp", loginTimestamp);
+        localStorage.setItem("loginTimestamp_" + userId, loginTimestamp);
       }
 
       // Cek apakah selisih waktu lebih dari satu hari (86400 detik)
