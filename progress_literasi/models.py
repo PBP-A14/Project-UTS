@@ -23,8 +23,8 @@ class ProgressBaca(models.Model):
 
 class TargetHarian(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    tanggal = models.DateField()
-    target_buku = models.IntegerField()
+    target_buku = models.PositiveIntegerField()
+    tanggal = models.DateTimeField(auto_now=True)
 
 class AktivitasUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

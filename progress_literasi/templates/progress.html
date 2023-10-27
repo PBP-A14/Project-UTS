@@ -1,25 +1,22 @@
 {% extends "base.html" %}
 
-{% load static %}
-<!-- <head>
-  <link rel="stylesheet" type="text/css" href="{% static 'progress_literasi/style.css' %}">
-</head> -->
-
 {% block content %}
 <style>
   h1 {
-    font-size: 30px;
+    font-size: 36px;
     color: #333;
     align-items: center;
     justify-content: center;
     text-align: center;
     margin-top: 80px;
+    margin-bottom: 20px;
   }
 
   h2 {
     font-size: 20px;
     color: #000000;
-    margin: 20px auto auto 15px;
+    margin-left: 15px;
+    margin-top: 15px
   }
 
   /* Gaya untuk daftar ul dan li */
@@ -32,14 +29,6 @@
     margin-left: 0px;
     font-size: 16px;
     color: #555;
-  }
-
-  /* Gaya untuk link */
-  a .btn-target {
-    text-decoration: none;
-    background-color: #0077cc;
-    margin-top: auto;
-
   }
 
   /* Gaya untuk tombol */
@@ -79,8 +68,13 @@
   </ul>
 
   <h2>Target Baca Harian Anda</h2>
-  <p>Anda berencana membaca {{ target_user.0.target_buku }} buku per hari.</p>
-  <!-- Tampilkan formulir untuk mengatur target harian jika belum ada -->
+  <ul>
+    {% if target_buku %}
+      <li>Anda ingin membaca {{ target_buku }} buku hari ini.</li>
+    {% else %}
+      <li>Anda belum menetapkan target harian.</li>
+    {% endif %}
+  </ul>
   <a class ="btn-target" href="{% url 'progress_literasi:set_target' %}">Set Target Harian</a>
 
   <h2>Waktu Aktif Pengguna</h1>
@@ -93,7 +87,7 @@
     <h2>Statistik Waktu Aktif</h2>
     <p>Anda dapat menampilkan grafik atau statistik waktu aktif pengguna di sini.</p>
     <div id="activity-chart">
-      <canvas id="activityChart" width="200" height="200"></canvas>
+      <canvas id="activityChart" width="100" height="100"></canvas>
     </div>
   </div>
 
@@ -116,6 +110,8 @@
     {% endfor %}
   </ul>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -177,35 +173,57 @@
 
   </script>
   
-<script>
-  // Data waktu aktif harian (contoh)
-  const waktuAktifHarian = { waktu_aktif_harian };
+  <script>
+    // Get the canvas element for the chart
+    const ctx = document.getElementById('activityChart').getContext('2d');
+
+    const initialData = [6, 1, 1, 1, 1, 1, 1];
   
-  // Mendapatkan elemen canvas grafik
-  const ctx = document.getElementById('activityChart').getContext('2d');
-  
-  // Menggambar grafik garis
-  const activityChart = new Chart(ctx, {
+    // Create a line chart
+    const activityChart = new Chart(ctx, {
       type: 'line',
       data: {
-          labels: ['Hari 1', 'Hari 2', 'Hari 3', 'Hari 4', 'Hari 5', 'Hari 6', 'Hari 7'],
-          datasets: [{
-              label: 'Waktu Aktif Harian',
-              data: waktuAktifHarian,
-              fill: false,
-              borderColor: 'rgb(75, 192, 192)',
-              tension: 0.1
-          }]
+        labels: ['Hari 1', 'Hari 2', 'Hari 3', 'Hari 4', 'Hari 5', 'Hari 6', 'Hari 7'],
+        datasets: [{
+          label: 'Waktu Aktif Harian',
+          data: [], // Initialize with empty data
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1,
+        }],
       },
       options: {
-          scales: {
-              y: {
-                  beginAtZero: true,
-                  suggestedMax: 24
-              }
-          }
+        scales: {
+          y: {
+            beginAtZero: true,
+            suggestedMax: 24,
+          },
+        },
+      },
+    });
+  
+    // Function to update the chart with new data
+    function updateChart(newValue) {
+      // Push the new value to the dataset
+      activityChart.data.datasets[0].data.push(newValue);
+  
+      // Remove the oldest data point if there are more than 7 data points
+      if (activityChart.data.datasets[0].data.length > 7) {
+        activityChart.data.datasets[0].data.shift();
       }
-  });
+  
+      // Update the chart
+      activityChart.update();
+    }
+  
+    // Example: Updating the chart with timer value every 5 seconds
+    setInterval(function() {
+      const timerValue = activityElement.textContent; // Get the timer value
+      const [hours, minutes, seconds] = timerValue.split(':');
+      const totalHours = parseInt(hours) + parseInt(minutes) / 60 + parseInt(seconds) / 3600;
+      updateChart(totalHours);
+    }, 5000); // Update the chart every 5 seconds
+  
   </script>
   
-{% endblock %}
+{% endblock content %}

@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages  
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
+from datetime import datetime
 
 # Create your views here.
 def register(request):
@@ -25,6 +26,7 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            request.session['login_time'] = datetime.now().timestamp() * 1000
             return redirect('home:home')
         else:
             messages.info(request, 'Sorry, incorrect username or password. Please try again.')
