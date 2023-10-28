@@ -1,22 +1,34 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.models import User
 from django.core import serializers
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, HttpResponseNotFound
 from home.models import Book
 from admin_app.models import Log
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
+from django.db.models import Q
+from datetime import datetime
+import json
 
 # Create your views here.
 
 @staff_member_required
 @login_required(login_url="authentication:login")
 def admin_app(request):
-    return render(request, "admin_app.html", {})
+    response = render(request, "admin_app.html")
+    if not request.COOKIES.get('start_time'):
+        response.set_cookie('start_time', datetime.now().timestamp())
+    else:
+        response.set_cookie('start_time', request.COOKIES.get('start_time'))
+    return response
+
+def get_book_json(request, q):
+    if q == 'None':
+        data = Book.objects.all().order_by('title')
+    else: 
+        data = Book.objects.filter(Q(title__icontains=q) | Q(authors__icontains=q)).order_by('title')
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
 
 def show_user_json(request):
     data = User.objects.all().order_by('username')
@@ -30,8 +42,17 @@ def get_username_json(request, id):
     user = get_object_or_404(User, pk=id)
     return JsonResponse({'username': user.username})
 
-def get_log_json(request):
-    logs = Log.objects.all().order_by('-pk')
+def get_log_json(request, id):
+    if id == 0:
+        logs = Log.objects.all().order_by('-pk')
+    elif id == 1:
+        logs = Log.objects.all().filter(category='Add book').order_by('-pk')
+    elif id == 2:
+        logs = Log.objects.all().filter(category='Edit book').order_by('-pk')
+    elif id == 3:
+        logs = Log.objects.all().filter(category='Delete book').order_by('-pk')
+    elif id == 4:
+        logs = Log.objects.all().filter(category='Delete user').order_by('-pk')
     return HttpResponse(serializers.serialize('json', logs))
 
 @csrf_exempt
@@ -109,3 +130,22 @@ def delete_user(request, id):
         new_log = Log(staff=request.user, category='Delete user', description=log_desc)
         new_log.save()
         return JsonResponse({'message': 'User deleted successfully'})
+
+@csrf_exempt    
+def delete_cookie(request):
+    if request.method == 'DELETE':
+        response = JsonResponse({'message': 'Cookie deleted'})
+        response.delete_cookie('start_time')
+        return response
+    
+    return JsonResponse({'message': 'Invalid request'}, status=400)
+
+@csrf_exempt    
+def update_cookie(request):
+    if request.method == 'POST':
+        response = JsonResponse({'message': 'Cookie updated'})
+        data = json.loads(request.body)
+        response.set_cookie('start_time', data.get('cookie'))
+        return response
+    
+    return JsonResponse({'message': 'Invalid request'}, status=400)
