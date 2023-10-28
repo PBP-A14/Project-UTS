@@ -7,4 +7,6 @@ urlpatterns = [
     path('set-target/', views.set_target, name='set_target'),
     path('progress/', views.progress, name='progress'),
     path('update_target/', views.update_target, name='update_target'),
+    path('reset_target/', views.reset_target, name='reset_target'),
+    path('read-book/<int:book_id>/', views.read_book, name='read_book'),
 ]

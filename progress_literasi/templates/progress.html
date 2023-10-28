@@ -45,6 +45,10 @@
     margin-left: 15px;
   }
 
+  strong.text-progress {
+    margin-left: 15px;
+  }
+
   .btn.btn-primary {
     background-color: #0077cc;
     color: #fff;
@@ -56,7 +60,14 @@
     margin-top: 10px;
   }
 
-  button#update-target-button {
+  .button-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  #update-target-button {
+    display: inline-block;
     background-color: #0077cc;
     color: #fff;
     padding: 7px 10px;
@@ -64,6 +75,18 @@
     border-radius: 5px;
     cursor: pointer;
     margin-left: 30px;
+    margin-top: 10px;
+  }
+
+  #reset-target-button {
+    display: inline-block;
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
     margin-top: 10px;
   }
 
@@ -88,14 +111,51 @@
     margin-top: 0px;
   }
 
+  .centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card-row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .card {
+    width: 8rem;
+    margin: 10px;
+  }
+
+  .card-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
 </style>
 
   <h1>Progress Literasi Anda</h1>
-  <ul>
-    {% for progress in progress_user %}
-      <li>{{ progress.buku.judul }} - {% if progress.buku_selesai %}Selesai{% else %}Belum Selesai{% endif %}</li>
-    {% endfor %}
-  </ul>
+  <strong class="text-progress">
+    {% if target_buku is not None %}
+        {% if book_count == target_buku %}
+          Selamat, proses jelajahmu sudah mencapai target!
+        {% else %}
+          {% if selisih is not None %}
+            {% if selisih > 0 %}
+              Kamu harus membaca {{ selisih }} buku untuk mencapai target jelajahmu!
+            {% else %}
+              Ayo segera mulai petualangan imajinasimu melalui buku!
+            {% endif %}
+          {% else %}
+            Segera tentukan target jelajahmu!
+          {% endif %}
+        {% endif %}
+    {% else %}
+      <li>Segera tentukan target jelajahmu!</li>
+    {% endif %}
+  </strong>
 
   <h2>Target Baca Harian Anda</h2>
   <ul>
@@ -107,7 +167,10 @@
     {% endif %}
   </ul>
   {% if target_buku %}
-    <button id="update-target-button">Ubah Target</button>
+    <div class="button-container">
+      <button id="update-target-button">Update Target</button>
+      <button id="reset-target-button">Reset Target</button>
+    </div>
     <div id="target-input-container" style="display: none;">
       <input type="number" id="new-target-input" placeholder="Masukkan target baru">
       <button id="save-target-button">Simpan</button>
@@ -119,17 +182,8 @@
 
   <h2>Waktu Aktif Pengguna</h1>
   <p class="d-inline-flex gap-1">
-    <a class="btn btn-primary" data-bs-toggle="collapse" href="#activity-status" role="button" aria-expanded="false" aria-controls="activity-status">Tampilkan Statistik</a>
     <a class="btn btn-primary" data-bs-toggle="collapse" href="#activity-history" role="button" aria-expanded="false" aria-controls="activity-history">Tampilkan Riwayat Aktivitas</a>
   </p>
-
-  <div class="collapse" id="activity-status">
-    <h2>Statistik Waktu Aktif</h2>
-    <p>Anda dapat menampilkan grafik atau statistik waktu aktif pengguna di sini.</p>
-    <div id="activity-chart">
-      <canvas id="activityChart" width="100" height="100"></canvas>
-    </div>
-  </div>
 
   <div class="collapse" id="activity-history">
     <h2>Riwayat Aktivitas Pengguna</h2>
@@ -139,22 +193,25 @@
         <span id="realtime-date"></span> 
         <strong>Waktu Aktif: {{ elapsed_time }}</strong>
         <span id="realtime-activity"></span> 
+        <ul id="activity-history-list">
+        </ul>
       </li>
     </ul>
   </div>
 
-  <h2>History Buku Anda</h2>
-  <ul>
-    {% for buku in buku_dibaca %}
-      <li>{{ buku.buku.judul }} - {{ buku.tanggal_dibaca }}</li>
-    {% endfor %}
-  </ul>
+  <h2>Riwayat Buku</h2>
+  <div class="centered-container">
+      <div id="book_card" class="card-container">
+          <!-- Ini adalah div tempat kartu buku akan ditampilkan -->
+      </div>
+  </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     var updateTargetButton = document.getElementById("update-target-button");
+    var resetTargetButton = document.getElementById("reset-target-button");
     var targetInputContainer = document.getElementById("target-input-container");
     var newTargetInput = document.getElementById("new-target-input");
     var saveTargetButton = document.getElementById("save-target-button");
@@ -163,9 +220,44 @@
     // Menambahkan event listener ke tombol "Ubah Target"
     updateTargetButton.addEventListener("click", function() {
       updateTargetButton.style.display = "none";
+      resetTargetButton.style.display = "none";
       targetInputContainer.style.display = "block";
     });
 
+    // Menambahkan event listener ke tombol "Reset Target"
+    resetTargetButton.addEventListener("click", function() {
+      // Kirim permintaan AJAX untuk mereset target harian
+      fetch("{% url 'progress_literasi:reset_target' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+      })
+        .then(function(response) {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Gagal mereset target harian.");
+          }
+        })
+        .then(function(data) {
+          // Tampilkan pesan hasil
+          targetMessage.textContent = data.message;
+          // Perbarui tampilan target harian di halaman
+          var targetDisplay = document.querySelector("#target-buku");
+          targetDisplay.textContent = "0";
+          resetTargetButton.style.display = "none";
+          updateTargetButton.style.display = "block";
+        })
+        .catch(function(error) {
+          // Tampilkan pesan kesalahan
+          targetMessage.textContent = "Terjadi kesalahan: " + error.message;
+        });
+        targetInputContainer.style.display = "none";
+        updateTargetButton.style.display = "none";
+        resetTargetButton.style.display = "none";
+    });
+    
     // Menambahkan event listener ke tombol "Simpan"
     saveTargetButton.addEventListener("click", function() {
       var newTarget = newTargetInput.value;
@@ -197,6 +289,7 @@
           // Sembunyikan kembali input target setelah mengirim permintaan
           targetInputContainer.style.display = "none";
           updateTargetButton.style.display = "block";
+          resetTargetButton.style.display = "block";
         })
         .catch(function(error) {
           // Tampilkan pesan kesalahan
@@ -219,7 +312,23 @@
     var activityElement = document.getElementById("realtime-activity");
     var userId = "{{ user.id }}";
     var loginTimestamp = localStorage.getItem("loginTimestamp_" + userId);
-    
+    var activityHistoryList = document.getElementById("activity-history-list");
+
+    // Fungsi untuk menambahkan riwayat waktu aktivitas
+    function addActivityHistory(timeString, dateString) {
+            var listItem = document.createElement("li");
+            listItem.innerHTML = `
+                <strong>Tanggal:</strong> ${dateString}
+                <strong>Waktu Aktif:</strong> ${timeString}
+            `;
+            activityHistoryList.appendChild(listItem);
+
+            // Batasi riwayat waktu hingga maksimal 5 baris
+            if (activityHistoryList.children.length > 5) {
+                activityHistoryList.removeChild(activityHistoryList.firstElementChild);
+            }
+        }
+
     // Fungsi untuk mengupdate waktu aktif sebagai timer
     function updateActivityTimer() {
       var now = new Date();
@@ -233,18 +342,31 @@
         localStorage.setItem("loginTimestamp_" + userId, loginTimestamp);
       }
 
-      // Cek apakah selisih waktu lebih dari satu hari (86400 detik)
-      if (elapsedTime > 86400) {
-        // Jika lebih dari satu hari, inisialisasi waktu dari awal
+      if (elapsedTime >= 36000) {
+        // Jika lebih dari 10 jam, inisialisasi waktu dari awal
         loginTimestamp = currentTime;
         localStorage.setItem("loginTimestamp", loginTimestamp);
         elapsedTime = 0;
+
+        // Konversi waktu ke format jam:menit:detik
+        var hours = Math.floor(elapsedTime / 3600);
+        var minutes = Math.floor((elapsedTime % 3600) / 60);
+        var seconds = elapsedTime % 60;
+        
+
+        // Format waktu
+        var timeString = hours.toString().padStart(2, '0') + ':' +
+                        minutes.toString().padStart(2, '0') + ':' +
+                        seconds.toString().padStart(2, '0');
+        
+        addActivityHistory(timeString, dateString);
       }
 
       // Konversi waktu ke format jam:menit:detik
       var hours = Math.floor(elapsedTime / 3600);
       var minutes = Math.floor((elapsedTime % 3600) / 60);
       var seconds = elapsedTime % 60;
+
 
       // Format waktu
       var timeString = hours.toString().padStart(2, '0') + ':' +
@@ -272,60 +394,45 @@
     updateActivityTimer();
 
   });
-
   </script>
-  
-  <script>
-    // Get the canvas element for the chart
-    const ctx = document.getElementById('activityChart').getContext('2d');
 
-    const initialData = [6, 1, 1, 1, 1, 1, 1];
-  
-    // Create a line chart
-    const activityChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['Hari 1', 'Hari 2', 'Hari 3', 'Hari 4', 'Hari 5', 'Hari 6', 'Hari 7'],
-        datasets: [{
-          label: 'Waktu Aktif Harian',
-          data: [], // Initialize with empty data
-          fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1,
-        }],
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-            suggestedMax: 24,
-          },
-        },
-      },
-    });
-  
-    // Function to update the chart with new data
-    function updateChart(newValue) {
-      // Push the new value to the dataset
-      activityChart.data.datasets[0].data.push(newValue);
-  
-      // Remove the oldest data point if there are more than 7 data points
-      if (activityChart.data.datasets[0].data.length > 7) {
-        activityChart.data.datasets[0].data.shift();
-      }
-  
-      // Update the chart
-      activityChart.update();
-    }
-  
-    // Example: Updating the chart with timer value every 5 seconds
-    setInterval(function() {
-      const timerValue = activityElement.textContent; // Get the timer value
-      const [hours, minutes, seconds] = timerValue.split(':');
-      const totalHours = parseInt(hours) + parseInt(minutes) / 60 + parseInt(seconds) / 3600;
-      updateChart(totalHours);
-    }, 5000); // Update the chart every 5 seconds
-  
-  </script>
+<script>
+  // Your JavaScript code here
+  async function getReadingHistory() {
+      return fetch("{% url 'my_profile:get_reading_history_json' %}").then((res) => res.json());
+  }
+
+  async function displayReadingHistory() {
+      const readingHistory = await getReadingHistory();
+
+      let htmlString = '<div class="card-row">';
+      let cardCount = 0;
+      readingHistory.forEach((item) => {
+          const rating = item.fields.rating_count === 0 ? "No Rating" : item.fields.rating;
+          console.log(item)
+          htmlString += `\n<div class="card">
+              <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-M.jpg" alt="Card image cap" style="width: 100%; height: 200px; object-fit: cover;">
+              <div class="card-body">
+                  <p class="card-text"><b>${item.fields.title}</b></p>
+                  <p class="card-text">${rating}</p>
+                  <a href="#" class="btn btn-primary">Detail</a>
+              </div>
+          </div>`;
+
+          cardCount++;
+          if (cardCount === 8) {
+              htmlString += '</div><div class="card-row">';
+              cardCount = 0;
+          }
+      });
+
+      htmlString += '</div>';
+
+      const bookCard = document.getElementById("book_card");
+      bookCard.innerHTML = htmlString;
+  }
+
+  displayReadingHistory();
+</script>
   
 {% endblock content %}

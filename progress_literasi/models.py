@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from home.models import Book
     
 class ProgressBaca(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -9,9 +10,8 @@ class ProgressBaca(models.Model):
 class TargetHarian(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     target_buku = models.PositiveIntegerField()
-    tanggal = models.DateTimeField(auto_now=True)
 
-class AktivitasUser(models.Model):
+class BukuDibaca(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    tanggal = models.DateField()
-    waktu_aktif = models.PositiveIntegerField(default=0)
+    buku = models.ForeignKey(Book, on_delete=models.CASCADE)
+    counted = models.IntegerField(default=0)

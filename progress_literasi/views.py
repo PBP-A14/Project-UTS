@@ -1,21 +1,14 @@
-from datetime import datetime
-from django.shortcuts import render, redirect
-from .models import Book, ProgressBaca, TargetHarian, BukuDibaca, AktivitasUser, BukuDibaca
-from .forms import TargetHarianForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import BukuDibaca
+from .forms import DailyTargetForm
 from django.contrib.auth.decorators import login_required
-from .models import AktivitasUser
+from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.http import HttpResponse, JsonResponse
-
-@csrf_exempt
-@login_required
-def buku_list(request):
-    buku_list = Book.objects.all()
-    user = request.user
-    progress_user = ProgressBaca.objects.filter(user=user)
-    target_user = TargetHarian.objects.filter(user=user)
-    return render(request, 'progress.html', {'buku_list': buku_list, 'progress_user': progress_user, 'target_user': target_user})
+from django.http import JsonResponse
+from my_profile.models import ReadingHistory, UserProfile
+from home.models import Book
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 @login_required
 def set_target(request):
@@ -39,14 +32,25 @@ def set_target(request):
 def progress(request):
     user_profile = UserProfile.objects.get(user=request.user)
     user = request.user
-    # Ambil data aktivitas pengguna yang saat ini login
-    aktivitas_user = AktivitasUser.objects.filter(user=user).order_by('-tanggal')[:7]
-    waktu_aktif_harian = [aktivitas.waktu_aktif for aktivitas in aktivitas_user]
-    target_buku = user_profile.target_buku
-    
+    user_profile = None
+    target_buku = None
+
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+        target_buku = user_profile.target_buku
+    except ObjectDoesNotExist:
+        user_profile = None
+        target_buku = 0
+
+    reading_history, created = ReadingHistory.objects.get_or_create(user=user)   
+    book_count = reading_history.books.count()
+    selisih = target_buku - book_count
+
     context = {
-        'waktu_aktif_harian': waktu_aktif_harian,
-        'target_buku' : target_buku,
+        'target_buku': target_buku,
+        'progress': user_profile.progress,
+        'book_count': book_count,
+        'selisih': selisih,
     }
 
     return render(request, 'progress.html', context)
@@ -54,19 +58,46 @@ def progress(request):
 @login_required
 def update_target(request):
     if request.method == 'POST':
-        user = request.user
-        inactivity_time = int(request.POST.get('inactivity_time'))
+        target_buku = request.POST.get('target_buku')
+        
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        update_target = request.POST.get('update_target')
+        if target_buku is None:
+            target_buku = 0
+        
+        if update_target == '0':
+            user_profile.target_buku = 0
+        
+        user_profile.target_buku = target_buku
+        user_profile.save()
 
-        # Menghitung waktu aktif saat ini
-        aktivitas_user, created = AktivitasUser.objects.get_or_create(user=user, tanggal=datetime.now().date())
-        aktivitas_user.waktu_aktif += inactivity_time
-        aktivitas_user.save()
-
-        return JsonResponse({'status': 'sukses'})
-    return HttpResponse(status=400)
+        response_data = {'status': 'success', 'message': 'Target harian berhasil diperbarui.'}
+        return JsonResponse(response_data)
+    
+    response_data = {'status': 'error', 'message': 'Permintaan tidak valid.'}
+    return JsonResponse(response_data)
 
 @login_required
-def history_buku(request):
-    user = request.user
-    buku_dibaca = BukuDibaca.objects.filter(user=user)
-    return render(request, 'history_buku.html', {'buku_dibaca': buku_dibaca})
+def reset_target(request):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+        user_profile.target_buku = 0
+        user_profile.save()
+        return JsonResponse({'success': True, 'message': 'Target harian berhasil direset.'})
+    except UserProfile.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Profil pengguna tidak ditemukan.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@login_required
+def read_book(request, book_id):
+    user = get_object_or_404(User, pk=request.user.id)
+    book = get_object_or_404(Book, pk=book_id)
+    buku_dibaca, created = BukuDibaca.objects.get_or_create(user=user, buku=book)
+
+    reading_history, created = ReadingHistory.objects.get_or_create(user=user)
+    
+    reading_history.books.add(buku_dibaca)
+    reading_history.save()
+
+    return redirect('home:home')
