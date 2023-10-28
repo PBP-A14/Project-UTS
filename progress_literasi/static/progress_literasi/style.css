@@ -1,0 +1,53 @@
+/* style.css */
+
+/* Gaya untuk elemen heading */
+h1 {
+    font-size: 24px;
+    color: #333;
+    align-items: center;
+    justify-content: center;
+}
+
+h2 {
+    font-size: 20px;
+    color: #666;
+}
+
+/* Gaya untuk daftar ul dan li */
+ul {
+    list-style: none;
+}
+
+li {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #555;
+}
+
+/* Gaya untuk link */
+a {
+    text-decoration: none;
+    color: #0077cc;
+}
+
+/* Gaya untuk tombol */
+.button {
+    background-color: #0077cc;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Gaya untuk elemen logout-button (sesuaikan dengan ID yang Anda gunakan) */
+#logout-button {
+    background-color: #cc0000;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Gaya lainnya sesuai kebutuhan Anda */
