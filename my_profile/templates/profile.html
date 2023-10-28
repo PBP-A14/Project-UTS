@@ -1,21 +1,77 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>My Profile</h1>
-    <h2>Reading List</h2>
-    <ul>
-        {% for book in user.userprofile.reading_list.all %}
-            <li>{{ book.title }}</li>
-        {% endfor %}
-    </ul>
+<style>
+    .centered-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-    <h2>History Bacaan</h2>
-    <ul>
-        {% for book in user.userprofile.history_bacaan.all %}
-            <li>{{ book.title }}</li>
-        {% endfor %}
-    </ul>
+    .card-row {
+        display: flex;
+        flex-wrap: wrap;
+    }
 
-    <h2>Progress Literasi</h2>
-    <p>{{ user.userprofile.progress_literasi }}%</p>
+    .card {
+        width: 8rem;
+        margin: 10px;
+    }
+
+    .card-text {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+</style>
+
+<body>
+    <br></br>
+    <br></br>
+    <h3 class="text-center">Hello, {{ request.user.username }}</h3>
+    <h4 class="text-center">Your Reading History</h4>
+    <div class="centered-container">
+        <div id="book_card">
+        </div>
+    </div>
+</body>
+
+<script>
+    // Your JavaScript code here
+    async function getReadingHistory() {
+        return fetch("{% url 'my_profile:get_reading_history_json' %}").then((res) => res.json());
+    }
+
+    async function displayReadingHistory() {
+        const readingHistory = await getReadingHistory();
+
+        let htmlString = '<div class="card-row">';
+        let cardCount = 0;
+        readingHistory.forEach((item) => {
+            const rating = item.fields.rating_count === 0 ? "No Rating" : item.fields.rating;
+            console.log(item)
+            htmlString += `\n<div class="card"">
+                <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-M.jpg" alt="Card image cap" style="width: 100%; height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <p class="card-text"><b>${item.fields.title}</b></p>
+                    <p class="card-text">${rating}</p>
+                    <a href="#" class="btn btn-primary">Detail</a>
+                </div>
+            </div>`;
+
+            cardCount++;
+            if (cardCount === 7) {
+                htmlString += '</div><div class="card-row">';
+                cardCount = 0;
+            }
+        });
+
+        htmlString += '</div>';
+
+        document.getElementById("book_card").innerHTML = htmlString;
+    }
+
+    displayReadingHistory();
+</script>
 {% endblock content %}

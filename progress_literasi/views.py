@@ -1,6 +1,6 @@
 from datetime import datetime
-from django.shortcuts import render, redirect
-from .models import Book, ProgressBaca, TargetHarian, BukuDibaca, AktivitasUser, BukuDibaca
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import ProgressBaca, TargetHarian, BukuDibaca, AktivitasUser, BukuDibaca
 from .forms import TargetHarianForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -10,6 +10,10 @@ from .models import AktivitasUser
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse, JsonResponse
+from my_profile.models import ReadingHistory
+from home.models import Book
+from django.contrib.auth.models import User
+from django.http import Http404
 
 @csrf_exempt
 @login_required
@@ -67,3 +71,28 @@ def history_buku(request):
     user = request.user
     buku_dibaca = BukuDibaca.objects.filter(user=user)
     return render(request, 'history_buku.html', {'buku_dibaca': buku_dibaca})
+
+@login_required
+def read_book(request, book_id):
+    user = get_object_or_404(User, pk=request.user.id)
+    book = get_object_or_404(Book, pk=book_id)
+
+    # # Check if any of the book's fields is null
+    # if any(
+    #     field is None
+    #     for field in [book.title, book.description, book.authors, book.isbn, book.num_pages, book.publisher, book.rating_count, book.rating]
+    # ):
+    #     raise Http404("The requested book does not exist or has null values in some fields.")
+
+    # try:
+    #     BukuDibaca.objects.get(user=user, buku=book)
+    # except:
+    #     BukuDibaca.objects.create(user=user, buku=book)  
+
+    buku_dibaca, created = BukuDibaca.objects.get_or_create(user=user, buku=book)
+
+    reading_history, created = ReadingHistory.objects.get_or_create(user=user)
+    reading_history.books.add(buku_dibaca)
+    reading_history.save()
+
+    return redirect('home:home')
