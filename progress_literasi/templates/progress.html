@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% load static %}
+<!-- <head>
+  <link rel="stylesheet" type="text/css" href="{% static 'progress_literasi/style.css' %}">
+</head> -->
+
+{% block content %}
+<style>
+  h1 {
+    font-size: 30px;
+    color: #333;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 80px;
+  }
+
+  h2 {
+    font-size: 20px;
+    color: #000000;
+    margin: 20px auto auto 15px;
+  }
+
+  /* Gaya untuk daftar ul dan li */
+  ul {
+    list-style: none;
+  }
+
+  li {
+    margin: 5px 0;
+    margin-left: 0px;
+    font-size: 16px;
+    color: #555;
+  }
+
+  /* Gaya untuk link */
+  a .btn-target {
+    text-decoration: none;
+    background-color: #0077cc;
+    margin-top: auto;
+
+  }
+
+  /* Gaya untuk tombol */
+  a.btn-target {
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 15px;
+    text-decoration: none;
+  }
+
+  p {
+    margin-left: 15px;
+  }
+
+  .btn.btn-primary {
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 0px;
+    margin-top: 10px;
+  }
+
+</style>
+
+  <h1>Progress Literasi Anda</h1>
+  <ul>
+    {% for progress in progress_user %}
+      <li>{{ progress.buku.judul }} - {% if progress.buku_selesai %}Selesai{% else %}Belum Selesai{% endif %}</li>
+    {% endfor %}
+  </ul>
+
+  <h2>Target Baca Harian Anda</h2>
+  <p>Anda berencana membaca {{ target_user.0.target_buku }} buku per hari.</p>
+  <!-- Tampilkan formulir untuk mengatur target harian jika belum ada -->
+  <a class ="btn-target" href="{% url 'progress_literasi:set_target' %}">Set Target Harian</a>
+
+  <h2>Waktu Aktif Pengguna</h1>
+  <p class="d-inline-flex gap-1">
+    <a class="btn btn-primary" data-bs-toggle="collapse" href="#activity-status" role="button" aria-expanded="false" aria-controls="activity-status">Tampilkan Statistik</a>
+    <a class="btn btn-primary" data-bs-toggle="collapse" href="#activity-history" role="button" aria-expanded="false" aria-controls="activity-history">Tampilkan Riwayat Aktivitas</a>
+  </p>
+
+  <div class="collapse" id="activity-status">
+    <h2>Statistik Waktu Aktif</h2>
+    <p>Anda dapat menampilkan grafik atau statistik waktu aktif pengguna di sini.</p>
+    <div id="activity-chart">
+      <canvas id="activityChart" width="200" height="200"></canvas>
+    </div>
+  </div>
+
+  <div class="collapse" id="activity-history">
+    <h2>Riwayat Aktivitas Pengguna</h2>
+    <ul>
+      <li>
+        <strong>Tanggal:</strong>
+        <span id="realtime-date"></span> 
+        <strong>Waktu Aktif:</strong>
+        <span id="realtime-activity"></span> 
+      </li>
+    </ul>
+  </div>
+
+  <h2>History Buku Anda</h2>
+  <ul>
+    {% for buku in buku_dibaca %}
+      <li>{{ buku.buku.judul }} - {{ buku.tanggal_dibaca }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var dateElement = document.getElementById("realtime-date")
+    var activityElement = document.getElementById("realtime-activity");
+    var loginTimestamp = loginTimestamp = localStorage.getItem("loginTimestamp");
+
+    // Fungsi untuk mengupdate waktu aktif sebagai timer
+    function updateActivityTimer() {
+      var now = new Date();
+      var dateString = now.toLocaleDateString();
+      var currentTime = Date.now();
+      var elapsedTime = Math.floor((currentTime - loginTimestamp) / 1000); // Calculate elapsed time in seconds
+
+      if (!loginTimestamp) {
+            // Jika loginTimestamp belum ada, inisialisasi dengan waktu saat ini
+            loginTimestamp = currentTime;
+            localStorage.setItem("loginTimestamp", loginTimestamp);
+      }
+
+      // Cek apakah selisih waktu lebih dari satu hari (86400 detik)
+      if (elapsedTime > 86400) {
+          // Jika lebih dari satu hari, inisialisasi waktu dari awal
+          loginTimestamp = currentTime;
+          localStorage.setItem("loginTimestamp", loginTimestamp);
+          elapsedTime = 0;
+      }
+
+      // Konversi waktu ke format jam:menit:detik
+      var hours = Math.floor(elapsedTime / 3600);
+      var minutes = Math.floor((elapsedTime % 3600) / 60);
+      var seconds = elapsedTime % 60;
+
+      // Format waktu
+      var timeString = hours.toString().padStart(2, '0') + ':' +
+                      minutes.toString().padStart(2, '0') + ':' +
+                      seconds.toString().padStart(2, '0');
+      activityElement.textContent = timeString;
+      dateElement.textContent = dateString;
+    }
+
+    // Memanggil fungsi updateActivityTimer setiap detik
+    var timerIntervalId = setInterval(updateActivityTimer, 1000);
+
+    // Saat pengguna logout, hentikan interval
+    function handleLogout() {
+        clearInterval(timerIntervalId);
+    }
+
+    // Memanggil fungsi updateActivityTimer untuk pertama kali
+    updateActivityTimer();
+
+    // Contoh: panggil handleLogout saat pengguna logout
+    // Gantilah dengan cara yang sesuai dengan aplikasi Anda
+    document.getElementById("btn-logout").addEventListener("click", function() {
+        handleLogout();
+    });
+  });
+
+  </script>
+  
+<script>
+  // Data waktu aktif harian (contoh)
+  const waktuAktifHarian = { waktu_aktif_harian };
+  
+  // Mendapatkan elemen canvas grafik
+  const ctx = document.getElementById('activityChart').getContext('2d');
+  
+  // Menggambar grafik garis
+  const activityChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: ['Hari 1', 'Hari 2', 'Hari 3', 'Hari 4', 'Hari 5', 'Hari 6', 'Hari 7'],
+          datasets: [{
+              label: 'Waktu Aktif Harian',
+              data: waktuAktifHarian,
+              fill: false,
+              borderColor: 'rgb(75, 192, 192)',
+              tension: 0.1
+          }]
+      },
+      options: {
+          scales: {
+              y: {
+                  beginAtZero: true,
+                  suggestedMax: 24
+              }
+          }
+      }
+  });
+  </script>
+  
+{% endblock %}

@@ -1,23 +1,33 @@
 from django.shortcuts import render
+from django.core import serializers
+from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
-from my_profile.models import UserProfile     
+from my_profile.models import UserProfile, ReadingHistory
+from progress_literasi.models import BukuDibaca    
 # Create your views here.
 
 @login_required
 def user_profile(request):
     # Mengambil objek UserProfile terkait dengan pengguna saat ini
-    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-    
-    # Anda dapat mengakses atribut UserProfile seperti yang Anda inginkan
-    reading_list = user_profile.reading_list.all()
-    history_bacaan = user_profile.history_bacaan.all()
-    progress_literasi = user_profile.progress_literasi
+    user = request.user
 
-    # Kemudian, Anda dapat melewatkan data ini ke tampilan template
+    reading_history, created = ReadingHistory.objects.get_or_create(user=user)
+
     context = {
-        'reading_list': reading_list,
-        'history_bacaan': history_bacaan,
-        'progress_literasi': progress_literasi,
+        'reading_history': reading_history,
     }
 
     return render(request, 'profile.html', context)
+
+@login_required
+def get_reading_history_json(request):
+    user = request.user
+    reading_history, created = ReadingHistory.objects.get_or_create(user=user)
+    
+    # Ambil semua objek BukuDibaca yang terkait dengan objek ReadingHistory
+    buku_dibaca_list = reading_history.books.all()
+
+    # Ambil objek Book yang terkait dengan setiap objek BukuDibaca
+    book_list = [buku_dibaca.buku for buku_dibaca in buku_dibaca_list]
+
+    return HttpResponse(serializers.serialize('json', book_list))
