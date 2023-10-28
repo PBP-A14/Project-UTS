@@ -60,7 +60,7 @@
             <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="{{ profile_url }}">Profile</a>
                 {% if request.user.is_staff %}
-                    <a class="dropdown-item" href="{% url 'admin_app:admin_app' %}">Admin</a>
+                    <a class="dropdown-item" href="{% url 'admin_app:admin_app' %}">Administration</a>
                 {% endif %}
                 <a class="dropdown-item" id="btn-logout" href="{% url 'authentication:logout' %}">Log out</a>
             </div>

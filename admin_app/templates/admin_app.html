@@ -1,40 +1,38 @@
 {% extends 'base.html' %}
 
+{% block meta %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock meta %}
+
 {% block content %}
-<style>
-    .centered-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .card-row {
-        display: flex;
-        flex-wrap: wrap;
-    }
-
-    .card-text {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 100%;
-    }
-</style>
 
 <body style="text-align: center;">
     <br></br>
     <br></br>
-    <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="width: 30rem">
+    <div class="d-flex justify-content-between">
+        <div style="margin-left: 90px;">
+            <a href="{% url 'home:home' %}" class="d-inline-block" style="vertical-align:top;">
+                <button class="btn btn-light"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+            </a>
+            <h3 class="d-inline-block" style="vertical-align:top;">Administration</h3>
+        </div>
+        <div class="d-flex align-items-baseline" style="margin-right: 90px">
+            <h5 style="margin-right: 5px"><i class="fa fa-hourglass" aria-hidden="true"></i> Elapsed Time:</h5>
+            <p id="elapsedTime">00:00:00</p>
+        </div>
+    </div>
+    <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="width: 30rem;">
         <input type="radio" class="btn-check" name="btnradio" id="books" autocomplete="off" checked>
-        <label class="btn btn-outline-primary" for="books">Book</label>
+        <label class="btn btn-outline-primary" for="books"><i class="fa fa-book" aria-hidden="true"></i> Book</label>
         <input type="radio" class="btn-check" name="btnradio" id="users" autocomplete="off">
-        <label class="btn btn-outline-primary" for="users">User</label>
+        <label class="btn btn-outline-primary" for="users"><i class="fa fa-users" aria-hidden="true"></i> User</label>
         <input type="radio" class="btn-check" name="btnradio" id="log" autocomplete="off">
-        <label class="btn btn-outline-primary" for="log">Log</label>
+        <label class="btn btn-outline-primary" for="log"><i class="fa fa-file-text" aria-hidden="true"></i> Log</label>
     </div>
     <br><br>
-    <div class="centered-container">
-        <div id="book_card"></div>
+    <div id="liveAlertPlaceholder" class="container-fluid mb-3"></div>
+    <div class="d-flex justify-content-center">
+        <div id="book_card" style="margin:0 50px"></div>
     </div>
 
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
@@ -75,7 +73,7 @@
                   </div>
                   <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Book</button>
+                      <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal"><i class="fa fa-plus" aria-hidden="true"></i> Add</button>
                   </div>
             </div>
         </div>
@@ -118,7 +116,7 @@
                   </div>
                   <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary" id="button_edit" data-bs-dismiss="modal">Edit Book</button>
+                      <button type="button" class="btn btn-warning" id="button_edit" data-bs-dismiss="modal"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</button>
                   </div>
             </div>
         </div>
@@ -127,7 +125,12 @@
 
 <script>
     async function getBooks() {
-        return fetch("{% url 'home:get_book_json' %}").then((res) => res.json())
+        if (document.getElementById("search").value) {
+            return fetch("{% url 'admin_app:get_book_json' 0 %}".replace(/0/, document.getElementById("search").value))
+            .then((res) => res.json())
+        } else {
+            return fetch("{% url 'admin_app:get_book_json' 'None' %}").then((res) => res.json())
+        }
     }
 
     async function getUsers() {
@@ -135,78 +138,85 @@
     }
 
     async function getLogs() {
-        return fetch("{% url 'admin_app:get_log_json' %}").then((res) => res.json())
+        return fetch("{% url 'admin_app:get_log_json' 0 %}".replace(/0/, document.getElementById("category").value))
+            .then((res) => res.json())
     }
 
-    async function refreshBooks() {
-        document.getElementById("book_card").innerHTML = ""
-        const book = await getBooks()
-        let htmlString = `<h3>Book Collection</h3><br>
-                        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal">
-                            Add New Book
-                        </button>
-                        <div class="card-row">`;
-        let cardCount = 0;
-
-        book.forEach((item) => {
-            htmlString += `\n<div class="card" style="width: 16rem; margin: 10px;">
-                <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-L.jpg" alt="Card image cap" style="width: 100%; height: 400px; object-fit: cover;">
-                <div class="card-body">
-                    <p class="card-text"><b>${item.fields.title}</b></p>
-                </div>
-                <div class="card-footer">
-                    <button type="button" class="btn btn-warning my-2 px-3" data-bs-toggle="modal" data-bs-target="#editModal" data-book-id="${item.pk}">
-                        Edit
-                    </button>
-                    <button class="btn btn-danger my-2 px-3 delete-btn delete_book" data-book-id="${item.pk}"> 
-                        Delete
-                    </button>
-                </div>
-            </div>`;
-
-            cardCount++;
-            if (cardCount === 4) { 
-                htmlString += '</div><div class="card-row">';
-                cardCount = 0;
-            }
-        });
-
-        htmlString += '</div>';
-
+    function refreshBooks() {
+        document.getElementById("book_card").innerHTML = "";
+        let htmlString = `<h3><i class="fa fa-book" aria-hidden="true"></i> Book Collection</h3><br>
+                        <div class="d-flex justify-content-between">
+                            <div class="mb-3" style="width:300px;margin-left:40px;">
+                                <input type="text" class="form-control border-primary-subtle" id="search" placeholder="&#xF002; Search title or author" style="font-family:system-ui, FontAwesome">
+                            </div>
+                            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal" style="margin-right:40px;width:170px;">
+                                <i class="fa fa-plus" aria-hidden="true"></i> Add New Book
+                            </button>
+                        </div>
+                        <div class="d-flex flex-wrap justify-content-center mt-2" id="book_collection" style="min-width:750px;">
+                        </div>`;
         document.getElementById("book_card").innerHTML = htmlString;
+        refreshBookCollection();
+    }
+    
+    async function refreshBookCollection() {
+        
+        const book = await getBooks()
+        let htmlString = ``;
+        if (book.length==0) {
+            htmlString = `<h5><i class="fa fa-frown-o" aria-hidden="true"></i> Result Not Found <i class="fa fa-frown-o" aria-hidden="true"></i></h4>`;
+        } else {
+            book.forEach((item) => {
+                htmlString += `\n<div class="card bg-info-subtle" style="width: 16rem; margin: 10px;">
+                    <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-L.jpg" alt="Card image cap" style="width: 100%; height: 375px; object-fit: cover;">
+                    <div class="card-body mt-3" style="height:40px;display:flex;align-items:center;justify-content:center;">
+                        <p style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"><b>${item.fields.title}</b></p>
+                    </div>
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-warning my-2 px-3" data-bs-toggle="modal" data-bs-target="#editModal" data-book-id="${item.pk}">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit
+                        </button>
+                        <button class="btn btn-danger my-2 px-3 delete-btn delete_book" data-book-id="${item.pk}"> 
+                            <i class="fa fa-times" aria-hidden="true"></i> Delete
+                        </button>
+                    </div>
+                </div>`;
+            });
+        }
+        document.getElementById("book_collection").innerHTML = htmlString;
     }
 
     async function refreshUsers() {
         document.getElementById("book_card").innerHTML = ""
         const users = await getUsers()
-        let htmlAdmin = `<h3>Admin</h3><br>`;
-        let htmlUser = `\n<br><h3>User</h3><br>`;
+        let htmlAdmin = `<h3><i class="fa fa-id-card-o" aria-hidden="true"></i> Admin</h3><br>`;
+        let htmlUser = `\n<br><hr><h3><i class="fa fa-users" aria-hidden="true"></i> User</h3><br>`;
 
         users.forEach((item) => {
             const lastLogin = item.fields.last_login ? item.fields.last_login.slice(0, 10) : "Never";
             if (item.fields.is_staff) {
                 htmlAdmin += `\n<div class="card" style="width: 16rem; margin: 10px; display: inline-block;">
-                    <div class="card-header"><h5 class="card-title">${item.fields.username}</h5></div>
-                    <div class="card-body">
+                    <div class="card-header bg-info"><h5 class="card-title">${item.fields.username}</h5></div>
+                    <div class="card-body bg-dark-subtle">
                     <h6 class="card-title">Date Joined: ${item.fields.date_joined.slice(0, 10)}</h6>
                     <h6 class="card-title">Last Login: ${lastLogin}</h6>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer bg-dark-subtle">
                     <button class="btn btn-danger my-2 px-3 delete-btn delete_user" data-user-id="${item.pk}"> 
-                        Delete
+                        <i class="fa fa-times" aria-hidden="true"></i> Delete
                     </button>
                     </div>
                 </div>`;
             } else {
                 htmlUser += `\n<div class="card" style="width: 16rem; margin: 10px; display: inline-block;">
-                    <div class="card-header"><h5 class="card-title">${item.fields.username}</h5></div>
-                    <div class="card-body">
+                    <div class="card-header bg-info-subtle"><h5 class="card-title">${item.fields.username}</h5></div>
+                    <div class="card-body bg-dark-subtle">
                     <h6 class="card-title">Date Joined: ${item.fields.date_joined.slice(0, 10)}</h6>
                     <h6 class="card-title">Last Login: ${lastLogin}</h6>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer bg-dark-subtle">
                     <button class="btn btn-danger my-2 px-3 delete-btn delete_user" data-user-id="${item.pk}"> 
-                        Delete
+                        <i class="fa fa-times" aria-hidden="true"></i> Delete
                     </button>
                     </div>
                 </div>`;
@@ -216,30 +226,53 @@
         document.getElementById("book_card").innerHTML = htmlAdmin + `<br>` + htmlUser;
     }
 
-    async function refreshLogs() {
+    function refreshLogs() {
         document.getElementById("book_card").innerHTML = ""
-        const log = await getLogs()
-        let htmlString = `<h3>Log</h3><br>
+        let htmlString = `<h3><i class="fa fa-file-text" aria-hidden="true"></i> Log</h3><br>
                         <table class="table table-striped table-bordered">
                             <thead>
-                                <tr>
+                                <tr style="vertical-align:text-bottom">
                                     <th scope="col">No</th>
                                     <th scope="col">Date</th>
                                     <th scope="col" style="width:150px">Admin</th>
-                                    <th scope="col">Category</th>
+                                    <th scope="col">
+                                        <select id="category" class="form-select" aria-label="Default select example" style="font-weight:bold">
+                                            <option value="0" selected>Category (All)</option>
+                                            <option value="1">Add Book</option>
+                                            <option value="2">Edit Book</option>
+                                            <option value="3">Delete Book</option>
+                                            <option value="4">Delete User</option>
+                                        </select>
+                                    </th>
                                     <th scope="col" style="width:600px">Description</th>
                                 </tr>
                             </thead>
-                            <tbody class="table-group-divider" style="text-align:left">`;
+                            <tbody id="log_table" class="table-group-divider" style="text-align:left">
+                            <tbody>
+                        </table>`;
+        document.getElementById("book_card").innerHTML = htmlString;
+        refreshLogTable();
+    }
+
+    async function refreshLogTable() {
+        document.getElementById("log_table").innerHTML = ""
+        let htmlString = ``;
+        const log = await getLogs()
         let counter = 1;
         let index = 0;
+        const userCache = {};
 
         const processLog = (item) => {
-            fetch(`/admin_app/get_username/${item.fields.staff}/`)
-                .then((res) => res.json())
-                .then(userData => {
-                    appendRow(item, userData);
-                });
+            if (userCache[item.fields.staff]) {
+                appendRow(item, userCache[item.fields.staff]);
+            } else {
+                const userData = fetch(`/admin_app/get_username/${item.fields.staff}/`)
+                    .then((res) => res.json())
+                    .then(userData => {
+                        userCache[item.fields.staff] = userData;
+                        appendRow(item, userData);
+                    });
+            }
         };
 
         const appendRow = (item, userData) => {
@@ -257,23 +290,24 @@
                 index++;
                 processLog(log[index]);
             } else {
-                htmlString += '</tbody></table>';
-                document.getElementById("book_card").innerHTML = htmlString;
+                document.getElementById("log_table").innerHTML = htmlString;
             }
         };
 
         if (log.length > 0) {
             processLog(log[index]);
         } else {
-            htmlString += '</tbody></table>';
-            document.getElementById("book_card").innerHTML = htmlString;
+            document.getElementById("log_table").innerHTML = htmlString;
         }
     }
 
-    document.addEventListener("DOMContentLoaded",  function() {
+    document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("books").onchange = function(){
             if(document.getElementById("books").checked){
                 refreshBooks();
+                document.getElementById("search").onkeyup = function() {
+                    refreshBookCollection();
+                };
             }
         };
         document.getElementById("users").onchange = function(){
@@ -284,73 +318,120 @@
         document.getElementById("log").onchange = function(){
             if(document.getElementById("log").checked){
                 refreshLogs();
+                document.getElementById("category").onchange = function() {
+                    refreshLogTable();
+                };
             }
         };
     });
-    refreshBooks()
+    refreshBooks();
+    document.getElementById("search").onkeyup = function() {
+        refreshBookCollection();
+    };
 
-    function addProduct() {
-        fetch("{% url 'admin_app:add_book' %}", {
-            method: "POST",
-            body: new FormData(document.querySelector('#form'))
-        }).then(refreshBooks)
-        document.getElementById("form").reset()
-        return false
-    }
-    document.getElementById("button_add").onclick = addProduct
+    document.addEventListener('DOMContentLoaded', function () {
+        $('#button_add').click(function() {
+            const message = 'Book added successfully!';
+            fetch("{% url 'admin_app:add_book' %}", {
+                method: "POST",
+                body: new FormData(document.querySelector('#form'))
+            }).then(refreshBookCollection);
+            appendAlert(message);
+            document.getElementById("form").reset();
+            return false
+        });
 
-    $('#editModal').on('show.bs.modal', function (event) {
-        const button = $(event.relatedTarget);
-        const bookId = button.data('book-id');
+        $('#editModal').on('show.bs.modal', function (event) {
+            const button = $(event.relatedTarget);
+            const bookId = button.data('book-id');
 
-        $.ajax({
-            url: `/admin_app/edit_book/${bookId}/`,
-            method: 'GET',
-            success: function(data) {
-                $("[name='title-edit']").val(data.title);
-                $("[name='description-edit']").val(data.description);
-                $("[name='authors-edit']").val(data.authors);
-                $("[name='isbn-edit']").val(data.isbn);
-                $("[name='num_pages-edit']").val(data.num_pages);
-                $("[name='publisher-edit']").val(data.publisher);
+            $.ajax({
+                url: `/admin_app/edit_book/${bookId}/`,
+                method: 'GET',
+                success: function(data) {
+                    $("[name='title-edit']").val(data.title);
+                    $("[name='description-edit']").val(data.description);
+                    $("[name='authors-edit']").val(data.authors);
+                    $("[name='isbn-edit']").val(data.isbn);
+                    $("[name='num_pages-edit']").val(data.num_pages);
+                    $("[name='publisher-edit']").val(data.publisher);
 
-                $('#edit-form').attr('action', `{% url 'admin_app:edit_book' 0 %}`.replace(/0/, bookId));
+                    $('#edit-form').attr('action', `{% url 'admin_app:edit_book' 0 %}`.replace(/0/, bookId));
+                }
+            });
+        });
+
+        $('#button_edit').click(function() {
+            const message = 'Book edited successfully!';
+            fetch($('#edit-form').attr('action'), {
+                method: "POST",
+                body: new FormData(document.querySelector('#edit-form'))
+            }).then(refreshBookCollection)
+            appendAlert(message);
+            return false
+        });
+
+        $('#book_card').on('click', '.delete_book', async function() {
+            var bookId = $(this).data('book-id');
+            const message = 'Book deleted successfully!';
+            if (confirm('Are you sure you want to delete this book?')) {
+                fetch("{% url 'admin_app:delete_book' 0 %}".replace(/0/, bookId), {
+                    method: "DELETE",
+                }).then(refreshBookCollection)
+                appendAlert(message);
+                return false
             }
         });
-  });
 
-  function editProduct() {
-    fetch($('#edit-form').attr('action'), {
-        method: "POST",
-        body: new FormData(document.querySelector('#edit-form'))
-    }).then(refreshBooks)
-    return false
+        $('#book_card').on('click', '.delete_user', async function() {
+            var userId = $(this).data('user-id');
+            const message = 'User deleted successfully!';
+            if (confirm('Are you sure you want to delete this user?')) {
+                fetch("{% url 'admin_app:delete_user' 0 %}".replace(/0/, userId), {
+                    method: "DELETE",
+                }).then(refreshUsers)
+                appendAlert(message);
+                return false
+            }
+        });
+
+        const appendAlert = (message) => {
+            const alertText = `<div class="alert alert-success alert-dismissible w-25 mb-2" role="alert" style="margin:auto">
+                                    <div><i class="fa fa-check-circle-o" aria-hidden="true"></i> ${message}</div>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>`
+            document.getElementById('liveAlertPlaceholder').innerHTML += alertText;
+        }
+    });
+
+    const startTimeCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('start_time='))
+        .split('=')[1];
+    const startTime = new Date(parseFloat(startTimeCookie) * 1000);
+
+    function formatTime(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = seconds % 60;
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
     }
-  document.getElementById("button_edit").onclick = editProduct
-    
 
-  document.addEventListener('DOMContentLoaded', function () {
-    $('#book_card').on('click', '.delete_book', async function() {
-          var bookId = $(this).data('book-id');
-          if (confirm('Are you sure you want to delete this book?')) {
-            fetch("{% url 'admin_app:delete_book' 0 %}".replace(/0/, bookId), {
-                method: "DELETE",
-            }).then(refreshBooks)
-            return false
-          }
-      });
-  });
+    function updateElapsedTime() {
+        const currentTime = new Date().getTime();
+        const elapsedTime = Math.floor((currentTime - startTime.getTime()) / 1000);
+        document.getElementById("elapsedTime").textContent = formatTime(elapsedTime);
 
-  document.addEventListener('DOMContentLoaded', function () {
-    $('#book_card').on('click', '.delete_user', async function() {
-          var userId = $(this).data('user-id');
-          if (confirm('Are you sure you want to delete this user?')) {
-            fetch("{% url 'admin_app:delete_user' 0 %}".replace(/0/, userId), {
-                method: "DELETE",
-            }).then(refreshUsers)
-            return false
-          }
-      });
-  });
+        // Kasus jika cookie di-delete dari tab lain
+        if (!document.cookie.split('; ').find(row => row.startsWith('start_time='))) {
+            fetch('/admin_app/update_cookie/', {method: "POST", body: JSON.stringify({cookie: startTimeCookie})});
+        }
+    }
+    setInterval(updateElapsedTime, 1000);
+    updateElapsedTime();
+
+    window.addEventListener("beforeunload", function(event) {
+        fetch('/admin_app/delete_cookie/', {method: "DELETE"});
+    });
 </script>
 {% endblock content %}
