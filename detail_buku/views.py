@@ -1,11 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from my_library.models import Bookmark
+# from my_library.models import Bookmark
 from .models import Book, BookView, BookLike, BookReview, BookBookmark, BookRating, Bookmark, Review
 from .forms import BookReviewForm, LikeBookForm, BookmarkBookForm
 
 # Create your views here.
-def book_detail(request, book_id):
+def detail_buku(request, book_id):
     # Get the specific book based on its ID or any other identifier
     book = get_object_or_404(Book, pk=book_id)
 
@@ -51,7 +51,7 @@ def submit_review(request, book_id):
             review.book = book
             review.reviewed_by = request.user
             review.save()
-            return redirect('book_detail', book_id=book_id)
+            return redirect('detail_buku', book_id=book_id)
     else:
         form = BookReviewForm()
     
@@ -64,7 +64,7 @@ def like_book(request, book_id):
         # Process the like request
         book.likes += 1
         book.save()
-        return redirect('book_detail', book_id=book_id)
+        return redirect('detail_buku', book_id=book_id)
     
     like_count = book.likes
 
@@ -79,7 +79,7 @@ def add_to_bookmarks(request, book_id):
         bookmark, created = Bookmark.objects.get_or_create(user=request.user, book=book)
         if created:
             # The book was successfully bookmarked
-            return redirect('book_detail', book_id=book_id)
+            return redirect('detail_buku', book_id=book_id)
 
     # Handle the case where the user has already bookmarked the book or it's not a POST request
-    return redirect('book_detail', book_id=book_id)
+    return redirect('detail_buku', book_id=book_id)

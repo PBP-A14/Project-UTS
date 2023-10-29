@@ -7,7 +7,6 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=100)
     published_date = models.DateField()
-    cover_image = models.ImageField(upload_to='book_covers/')
     synopsis = models.TextField()
     likes = models.IntegerField(default=0)
     bookmarked_by = models.ManyToManyField(User, related_name='bookmarks', blank=True)

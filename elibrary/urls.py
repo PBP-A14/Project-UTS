@@ -23,4 +23,5 @@ urlpatterns = [
     path('authentication/', include ('authentication.urls')),
     path('my_profile', include ('my_profile.urls')),
     path('admin_app/', include('admin_app.urls')),
+    path('detail_buku/', include('detail_buku.urls')),
 ]
