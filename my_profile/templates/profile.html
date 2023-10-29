@@ -27,8 +27,17 @@
 </style>
 
 <body>
+    
     <br></br>
     <br></br>
+    <h4 class="text-center">Your Progress</h4>
+        {% if percentage_complete %}
+            <p class="text-center">Progress harian kamu sudah {{ percentage_complete }}% selesai</p>
+            <p class="text-center">Kamu sudah membaca {{ book_count }} buku dari total {{ target_buku }} target kamu</p>
+            <p class="text-center">Untuk lihat selengkapnya silahkan cek progress literasi di atas</p>
+        {% else %}
+            <p class="text-center">Kamu belum memiliki progress literasi, tambahkan target harian kamu via progress literasi di atas!</p>
+        {% endif %}
     <br>
     <br>
     <h4 class="text-center">Your Reading History</h4>
@@ -36,6 +45,46 @@
         <div id="book_card">
         </div>
     </div>
+
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Change Password</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="change_password_form" method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="old_password" class="col-form-label">Old Password:</label>
+                            <input type="password" class="form-control" id="old_password" name="old_password">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new_password1" class="col-form-label">New Password:</label>
+                            <input type="password" class="form-control" id="new_password1" name="new_password1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="new_password2" class="col-form-label">Confirm New Password:</label>
+                            <input type="password" class="form-control" id="new_password2" name="new_password2">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="button_change_password" data-bs-dismiss="modal">Change Password</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="text-center">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+            Change Password
+        </button>
+    </div>
+    
 </body>
 
 <script>
@@ -74,5 +123,28 @@
     }
 
     displayReadingHistory();
+
+    function changePassword() {
+        fetch("{% url 'my_profile:change_password' %}", {
+            method: "POST",
+            body: new FormData(document.querySelector('#change_password_form'))
+        })
+        .then((response) => {
+            if (response.status === 200) {
+                // Jika perubahan password berhasil, tampilkan pesan sukses.
+                alert("Password changed successfully");
+            } else {
+                // Jika terjadi kesalahan, tampilkan pesan error.
+                alert("Error: Password change failed");
+            }
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+
+        document.getElementById("change_password_form").reset();
+    }
+
+    document.getElementById("button_change_password").onclick = changePassword;
 </script>
 {% endblock content %}

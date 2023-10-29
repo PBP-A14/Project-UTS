@@ -41,6 +41,17 @@ def progress(request):
         user_profile = None
         target_buku = 0
 
+<<<<<<< HEAD
+    # reading_history, created = ReadingHistory.objects.get_or_create(user=user)   
+    # book_count = reading_history.books.count()
+    # selisih = target_buku - book_count
+
+    context = {
+        'target_buku': target_buku,
+        # 'progress': user_profile.progress,
+        # 'book_count': book_count,
+        # 'selisih': selisih,
+=======
     reading_history, created = ReadingHistory.objects.get_or_create(user=user)   
     book_count = reading_history.books.count()
     selisih = target_buku - book_count
@@ -50,9 +61,51 @@ def progress(request):
         'progress': user_profile.progress,
         'book_count': book_count,
         'selisih': selisih,
+>>>>>>> 949a3c6412f47566f6c500ba442255e240121f9b
     }
 
     return render(request, 'progress.html', context)
+
+@login_required
+<<<<<<< HEAD
+def get_text_progress(request):
+    user = request.user
+    user_profile = None
+    target_buku = None
+    book_count = 0  
+
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        target_buku = user_profile.target_buku if user_profile else None
+    except UserProfile.DoesNotExist:
+        user_profile = None
+        target_buku = 0
+
+    try:
+        reading_history = ReadingHistory.objects.get(user=user)
+        book_count = reading_history.books.count() 
+    except ReadingHistory.DoesNotExist:
+        book_count = 0
+
+    selisih = target_buku - book_count if target_buku is not None else None
+
+    if target_buku is not None:
+        if target_buku == 0:
+            text_progress = "Segera tentukan target jelajahmu!"
+        elif book_count >= target_buku:
+            text_progress = "Selamat, proses jelajahmu sudah mencapai target!"
+        else:
+            if selisih is not None:
+                if selisih > 0:
+                    text_progress = f"Kamu harus membaca {selisih} buku untuk mencapai target jelajahmu!"
+                else:
+                    text_progress = "Ayo segera mulai petualangan imajinasimu melalui buku!"
+            else:
+                text_progress = "Segera tentukan target jelajahmu!"
+    else:
+        text_progress = "Segera tentukan target jelajahmu!"
+
+    return JsonResponse({'text_progress': text_progress})
 
 @login_required
 def update_target(request):
@@ -77,6 +130,30 @@ def update_target(request):
     return JsonResponse(response_data)
 
 @login_required
+=======
+def update_target(request):
+    if request.method == 'POST':
+        target_buku = request.POST.get('target_buku')
+        
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        update_target = request.POST.get('update_target')
+        if target_buku is None:
+            target_buku = 0
+        
+        if update_target == '0':
+            user_profile.target_buku = 0
+        
+        user_profile.target_buku = target_buku
+        user_profile.save()
+
+        response_data = {'status': 'success', 'message': 'Target harian berhasil diperbarui.'}
+        return JsonResponse(response_data)
+    
+    response_data = {'status': 'error', 'message': 'Permintaan tidak valid.'}
+    return JsonResponse(response_data)
+
+@login_required
+>>>>>>> 949a3c6412f47566f6c500ba442255e240121f9b
 def reset_target(request):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
@@ -87,15 +164,22 @@ def reset_target(request):
         return JsonResponse({'success': False, 'message': 'Profil pengguna tidak ditemukan.'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+<<<<<<< HEAD
+
+=======
+>>>>>>> 949a3c6412f47566f6c500ba442255e240121f9b
 
 @login_required
 def read_book(request, book_id):
     user = get_object_or_404(User, pk=request.user.id)
     book = get_object_or_404(Book, pk=book_id)
     buku_dibaca, created = BukuDibaca.objects.get_or_create(user=user, buku=book)
-
     reading_history, created = ReadingHistory.objects.get_or_create(user=user)
+<<<<<<< HEAD
+
+=======
     
+>>>>>>> 949a3c6412f47566f6c500ba442255e240121f9b
     reading_history.books.add(buku_dibaca)
     reading_history.save()
 
