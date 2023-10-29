@@ -9,6 +9,8 @@ from my_profile.models import ReadingHistory, UserProfile
 from home.models import Book
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.signals import user_logged_out
+from django.contrib.auth import logout
 
 @login_required
 def set_target(request):

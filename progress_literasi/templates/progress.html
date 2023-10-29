@@ -141,7 +141,7 @@
     {% if target_buku is not None %}
         {% if target_buku == 0 %}
           Segera tentukan target jelajahmu!
-        {% elif book_count == target_buku %}
+        {% elif book_count >= target_buku %}
           Selamat, proses jelajahmu sudah mencapai target!
         {% else %}
           {% if selisih is not None %}

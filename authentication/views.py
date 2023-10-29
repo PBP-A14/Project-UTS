@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
 
+from my_profile.models import ReadingHistory
+
 # Create your views here.
 def register(request):
     form = UserCreationForm()
@@ -32,5 +34,11 @@ def login_user(request):
     return render(request, 'login.html', context)
 
 def logout_user(request):
+    user = request.user
+    try:
+        reading_history = ReadingHistory.objects.get(user=user)
+        reading_history.delete()
+    except ReadingHistory.DoesNotExist:
+        pass
     logout(request)
     return redirect('home:home')
