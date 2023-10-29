@@ -42,12 +42,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'home:home' %}">Home</a>
                 </li>
+                {% if request.user.is_authenticated %}
                 <li class="nav-item">
                     <a class="nav-link" href="">My Library</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{%url 'progress_literasi:progress' %}">Progres Literasi</a>
                 </li>
+                {% endif %}
             </ul>
         </div>
         {% if request.user.is_authenticated %}
