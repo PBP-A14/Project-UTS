@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.core import serializers
 from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from my_profile.models import UserProfile, ReadingHistory
 from progress_literasi.models import BukuDibaca    
@@ -22,7 +23,7 @@ def user_profile(request):
 @login_required
 def get_reading_history_json(request):
     user = request.user
-    reading_history, created = ReadingHistory.objects.get_or_create(user=user)
+    reading_history = ReadingHistory.objects.get(user=user)
     
     # Ambil semua objek BukuDibaca yang terkait dengan objek ReadingHistory
     buku_dibaca_list = reading_history.books.all()

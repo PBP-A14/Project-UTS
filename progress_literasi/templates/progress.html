@@ -209,25 +209,6 @@
 
   <h1>Progress Literasi Anda</h1>
   <strong id="progress-text">
-    {% if target_buku is not None %}
-        {% if target_buku == 0 %}
-          Segera tentukan target jelajahmu!
-        {% elif book_count >= target_buku %}
-          Selamat, proses jelajahmu sudah mencapai target!
-        {% else %}
-          {% if selisih is not None %}
-            {% if selisih > 0 %}
-              Kamu harus membaca {{ selisih }} buku untuk mencapai target jelajahmu!
-            {% else %}
-              Ayo segera mulai petualangan imajinasimu melalui buku!
-            {% endif %}
-          {% else %}
-            Segera tentukan target jelajahmu!
-          {% endif %}
-        {% endif %}
-    {% else %}
-      <li>Segera tentukan target jelajahmu!</li>
-    {% endif %}
   </strong>
 
   <h2>Target Baca Harian Anda</h2>
@@ -269,6 +250,27 @@
       <div id="book_card" class="card-container">
       </div>
   </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+      async function updateProgressText() {
+        try {
+          const response = await fetch("{% url 'progress_literasi:get_text_progress' %}");
+          if (!response.ok) {
+            throw new Error("Gagal mengambil data kemajuan.");
+          }
+          const data = await response.json();
+          document.getElementById("progress-text").textContent = data.text_progress;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      updateProgressText();
+
+      setInterval(updateProgressText, 1000);
+    });
+  </script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -446,7 +448,6 @@
   </script>
 
 <script>
-  // Your JavaScript code here
   async function getReadingHistory() {
       return fetch("{% url 'my_profile:get_reading_history_json' %}").then((res) => res.json());
   }

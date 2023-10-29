@@ -41,18 +41,98 @@ def progress(request):
         user_profile = None
         target_buku = 0
 
-    reading_history, created = ReadingHistory.objects.get_or_create(user=user)   
-    book_count = reading_history.books.count()
-    selisih = target_buku - book_count
+    # reading_history, created = ReadingHistory.objects.get_or_create(user=user)   
+    # book_count = reading_history.books.count()
+    # selisih = target_buku - book_count
 
     context = {
         'target_buku': target_buku,
-        'progress': user_profile.progress,
-        'book_count': book_count,
-        'selisih': selisih,
+        # 'progress': user_profile.progress,
+        # 'book_count': book_count,
+        # 'selisih': selisih,
     }
 
     return render(request, 'progress.html', context)
+
+@login_required
+def get_text_progress(request):
+    user = request.user
+    user_profile = None
+    target_buku = None
+    book_count = 0  
+
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        target_buku = user_profile.target_buku if user_profile else None
+    except UserProfile.DoesNotExist:
+        user_profile = None
+        target_buku = 0
+
+    try:
+        reading_history = ReadingHistory.objects.get(user=user)
+        book_count = reading_history.books.count() 
+    except ReadingHistory.DoesNotExist:
+        pass  
+
+    selisih = target_buku - book_count if target_buku is not None else None
+
+    if target_buku is not None:
+        if target_buku == 0:
+            text_progress = "Segera tentukan target jelajahmu!"
+        elif book_count >= target_buku:
+            text_progress = "Selamat, proses jelajahmu sudah mencapai target!"
+        else:
+            if selisih is not None:
+                if selisih > 0:
+                    text_progress = f"Kamu harus membaca {selisih} buku untuk mencapai target jelajahmu!"
+                else:
+                    text_progress = "Ayo segera mulai petualangan imajinasimu melalui buku!"
+            else:
+                text_progress = "Segera tentukan target jelajahmu!"
+    else:
+        text_progress = "Segera tentukan target jelajahmu!"
+
+    return JsonResponse({'text_progress': text_progress})
+
+# @login_required
+# def get_text_progress(request):
+#     user = request.user
+#     user_profile = None
+#     target_buku = None
+
+#     try:
+#         user_profile = UserProfile.objects.get(user=user)
+#         target_buku = user_profile.target_buku if user_profile else None
+#     except UserProfile.DoesNotExist:
+#         user_profile = None
+#         target_buku = 0
+
+#     try:
+#         reading_history = ReadingHistory.objects.filter(user=user).latest('timestamp')
+#     except ReadingHistory.DoesNotExist:
+#         reading_history = ReadingHistory(user=user)
+#         reading_history.save()
+
+#     book_count = reading_history.books.count()
+#     selisih = target_buku - book_count if target_buku is not None else None
+
+#     if target_buku is not None:
+#         if target_buku == 0:
+#             text_progress = "Segera tentukan target jelajahmu!"
+#         elif book_count >= target_buku:
+#             text_progress = "Selamat, proses jelajahmu sudah mencapai target!"
+#         else:
+#             if selisih is not None:
+#                 if selisih > 0:
+#                     text_progress = f"Kamu harus membaca {selisih} buku untuk mencapai target jelajahmu!"
+#                 else:
+#                     text_progress = "Ayo segera mulai petualangan imajinasimu melalui buku!"
+#             else:
+#                 text_progress = "Segera tentukan target jelajahmu!"
+#     else:
+#         text_progress = "Segera tentukan target jelajahmu!"
+
+#     return JsonResponse({'text_progress': text_progress})
 
 @login_required
 def update_target(request):
@@ -87,6 +167,7 @@ def reset_target(request):
         return JsonResponse({'success': False, 'message': 'Profil pengguna tidak ditemukan.'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
 
 @login_required
 def read_book(request, book_id):
