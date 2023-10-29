@@ -50,20 +50,22 @@
                     </div>
                     <button class="btn btn-outline-secondary" type="button" id="reset_button"
                         style="display: none; margin-left: 8px;">X</button>
-                    <div class="btn-group">
+                    <div class="btn-group" id="dropdown_filter">
                         <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                             aria-expanded="false" style="margin-left: 8px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
-                                <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-filter" viewBox="0 0 16 16">
+                                <path
+                                    d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
                             </svg>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" id="sort_a_z">A to Z</a></li>
-                            <li><a class="dropdown-item" href="#" id="sort_z_a">Z to A</a></li>
+                            <li><a class="dropdown-item" href="" id="sort_a_z">A to Z</a></li>
+                            <li><a class="dropdown-item" href="" id="sort_z_a">Z to A</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="#" id="sort_none">None</a></li>
+                            <li><a class="dropdown-item" href="" id="sort_none">None</a></li>
                         </ul>
                     </div>
                 </div>
@@ -86,6 +88,9 @@
             document.getElementById("reset_button").style.display = "block";
             document.getElementById("search_result_text").style.display = "block";
             document.getElementById("search_result_text").innerText = `Search result for '${query}'`;
+
+            document.getElementById("dropdown_filter").style.display = "none";
+            document.getElementById("filter_text").style.display = "none";
         });
     });
 
@@ -94,10 +99,11 @@
         document.getElementById("reset_button").style.display = "none";
         document.getElementById("search_result_text").style.display = "none";
         document.getElementById("search_input").value = "";
-        document.getElementById("filter_button").style.display = "block";
+
+        document.getElementById("dropdown_filter").style.display = "block";
     });
 
-    document.getElementById("sort_a_z").addEventListener("click", function() {
+    document.getElementById("sort_a_z").addEventListener("click", function () {
         fetch(`{% url 'home:sort_book' %}?sort=a_z`).then((res) => res.json()).then((data) => {
             refreshProducts(data);
             document.getElementById("filter_text").style.display = "block";
@@ -105,7 +111,7 @@
         });
     });
 
-    document.getElementById("sort_z_a").addEventListener("click", function() {
+    document.getElementById("sort_z_a").addEventListener("click", function () {
         fetch(`{% url 'home:sort_book' %}?sort=z_a`).then((res) => res.json()).then((data) => {
             refreshProducts(data);
             document.getElementById("filter_text").style.display = "block";
@@ -113,7 +119,7 @@
         });
     });
 
-    document.getElementById("sort_none").addEventListener("click", function() {
+    document.getElementById("sort_none").addEventListener("click", function () {
         getProducts().then(refreshProducts);
         document.getElementById("filter_text").style.display = "none";
     });
@@ -128,21 +134,31 @@
         book.forEach((item) => {
             const title = item.fields.title.length >= 50 ? `${item.fields.title.substring(0, 50)}...` : item.fields.title;
             const rating = item.fields.rating_count === 0 ? "No rating" : `Rating: ${item.fields.rating}`;
+            console.log(item)
             htmlString += `\n
-            <div class="col">
-                <div class="card h-100">
-                    <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-M.jpg" alt="Card image cap">
-                    <div class="card-body">
-                        <p class="card-text text-center"><b>${title}</b></p>
-                        <p class="card-text text-center">${rating}</p>
-                        <button class="btn btn-secondary">Read</button>
-                    </div>
+        <div class="col">
+            <div class="card h-100">
+                <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-M.jpg" alt="Card image cap">
+                <div class="card-body">
+                    <p class="card-text text-center"><b>${title}</b></p>
+                    <p class="card-text text-center">${rating}</p>
+                    {% if request.user.is_authenticated %}
+                    <button id="read_${item.pk}" class="btn btn-secondary">Read</button>
+                    {% endif %}
                 </div>
-            </div>`
+            </div>
+        </div>`
         })
 
         document.getElementById("book_card").innerHTML = htmlString
+
+        book.forEach((item) => {
+            document.getElementById(`read_${item.pk}`).addEventListener("click", function () {
+                window.location.href = "{% url 'progress_literasi:read_book' book_id=1 %}".replace(/1/, item.pk.toString());
+            });
+        });
     }
+
 
     getProducts().then(refreshProducts)
 </script>
