@@ -52,7 +52,7 @@
     margin-left: 15px;
   }
 
-  strong.text-progress {
+  strong#progress-text {
     margin-left: 15px;
   }
 
@@ -208,27 +208,7 @@
 </style>
 
   <h1>Progress Literasi Anda</h1>
-  <strong class="text-progress">
-    {% if target_buku is not None %}
-        {% if target_buku == 0 %}
-          Segera tentukan target jelajahmu!
-        {% elif book_count >= target_buku %}
-          Selamat, proses jelajahmu sudah mencapai target!
-        {% else %}
-          {% if selisih is not None %}
-            {% if selisih > 0 %}
-              Kamu harus membaca {{ selisih }} buku untuk mencapai target jelajahmu!
-            {% else %}
-              Ayo segera mulai petualangan imajinasimu melalui buku!
-            {% endif %}
-          {% else %}
-            Segera tentukan target jelajahmu!
-          {% endif %}
-        {% endif %}
-    {% else %}
-      <li>Segera tentukan target jelajahmu!</li>
-    {% endif %}
-  </strong>
+  <strong id="progress-text"></strong>
 
   <h2>Target Baca Harian Anda</h2>
   <ul>
@@ -244,7 +224,7 @@
       <button id="update-target-button">Update Target</button>
       <button id="reset-target-button">Reset Target</button>
     </div>
-    <div id="target-input-container" class="modal" style="display: none;">
+    <div id="target-input-container" class="modal g-0 container-fluid" style="display: none;">
       <div class="modal-content">
         <span class="close" id="close-target-modal">&times;</span>
         <input type="number" id="new-target-input" placeholder="Masukkan target baru">
@@ -270,6 +250,31 @@
       </div>
   </div>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      function updateProgressText() {
+        fetch("{% url 'progress_literasi:get_text_progress' %}")
+          .then(function(response) {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error("Gagal mengambil data kemajuan.");
+            }
+          })
+          .then(function(data) {
+            document.getElementById("progress-text").textContent = data.text_progress;
+          })
+          .catch(function(error) {
+            console.error(error);
+          });
+      }
+  
+      updateProgressText();
+  
+      setInterval(updateProgressText, 1000);
+    });
+  </script>
+  
 <script>
   document.addEventListener("DOMContentLoaded", function() {
     var updateTargetButton = document.getElementById("update-target-button");

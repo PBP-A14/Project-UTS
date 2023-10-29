@@ -9,8 +9,6 @@ from my_profile.models import ReadingHistory, UserProfile
 from home.models import Book
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.signals import user_logged_out
-from django.contrib.auth import logout
 
 @login_required
 def set_target(request):
@@ -32,7 +30,6 @@ def set_target(request):
 
 @login_required
 def progress(request):
-    user = request.user
     user_profile = None
     target_buku = None
 
@@ -43,18 +40,45 @@ def progress(request):
         user_profile = None
         target_buku = 0
 
+    context = {
+        'target_buku': target_buku,
+    }
+
+    return render(request, 'progress.html', context)
+
+def get_text_progress(request):
+    user = request.user
+    user_profile = None
+    target_buku = None
+
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        target_buku = user_profile.target_buku if user_profile else None
+    except UserProfile.DoesNotExist:
+        user_profile = None
+        target_buku = 0
+
     reading_history, created = ReadingHistory.objects.get_or_create(user=user)   
     book_count = reading_history.books.count()
     selisih = target_buku - book_count if target_buku is not None else None
 
-    context = {
-        'target_buku': target_buku,
-        'progress': user_profile.progress if user_profile else None,
-        'book_count': book_count,
-        'selisih': selisih,
-    }
+    if target_buku is not None:
+        if target_buku == 0:
+            text_progress = "Segera tentukan target jelajahmu!"
+        elif book_count >= target_buku:
+            text_progress = "Selamat, proses jelajahmu sudah mencapai target!"
+        else:
+            if selisih is not None:
+                if selisih > 0:
+                    text_progress = f"Kamu harus membaca {selisih} buku untuk mencapai target jelajahmu!"
+                else:
+                    text_progress = "Ayo segera mulai petualangan imajinasimu melalui buku!"
+            else:
+                text_progress = "Segera tentukan target jelajahmu!"
+    else:
+        text_progress = "Segera tentukan target jelajahmu!"
 
-    return render(request, 'progress.html', context)
+    return JsonResponse({'text_progress': text_progress})
 
 @login_required
 def update_target(request):
