@@ -1,0 +1,438 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  h1 {
+    font-size: 36px;
+    color: #333;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 80px;
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-size: 20px;
+    color: #000000;
+    margin-left: 15px;
+    margin-top: 15px
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  li {
+    margin: 5px 0;
+    margin-left: 0px;
+    font-size: 16px;
+    color: #555;
+  }
+
+  a.btn-target {
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 15px;
+    text-decoration: none;
+  }
+
+  p {
+    margin-left: 15px;
+  }
+
+  strong.text-progress {
+    margin-left: 15px;
+  }
+
+  .btn.btn-primary {
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 0px;
+    margin-top: 10px;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  #update-target-button {
+    display: inline-block;
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 30px;
+    margin-top: 10px;
+  }
+
+  #reset-target-button {
+    display: inline-block;
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+
+  button#save-target-button {
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+    margin-top: 0px;
+  }
+
+  #target-input-container {
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 20px;
+    margin-top: 0px;
+  }
+
+  .centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card-row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .card {
+    width: 8rem;
+    margin: 10px;
+  }
+
+  .card-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+</style>
+
+  <h1>Progress Literasi Anda</h1>
+  <strong class="text-progress">
+    {% if target_buku is not None %}
+        {% if book_count == target_buku %}
+          Selamat, proses jelajahmu sudah mencapai target!
+        {% else %}
+          {% if selisih is not None %}
+            {% if selisih > 0 %}
+              Kamu harus membaca {{ selisih }} buku untuk mencapai target jelajahmu!
+            {% else %}
+              Ayo segera mulai petualangan imajinasimu melalui buku!
+            {% endif %}
+          {% else %}
+            Segera tentukan target jelajahmu!
+          {% endif %}
+        {% endif %}
+    {% else %}
+      <li>Segera tentukan target jelajahmu!</li>
+    {% endif %}
+  </strong>
+
+  <h2>Target Baca Harian Anda</h2>
+  <ul>
+    {% if target_buku %}
+      <li>Anda ingin membaca <span id="target-buku">{{ target_buku }}</span> buku hari ini.</li>
+      <div id="target-message"></div>
+    {% else %}
+      <li>Anda belum menetapkan target harian.</li>
+    {% endif %}
+  </ul>
+  {% if target_buku %}
+    <div class="button-container">
+      <button id="update-target-button">Update Target</button>
+      <button id="reset-target-button">Reset Target</button>
+    </div>
+    <div id="target-input-container" style="display: none;">
+      <input type="number" id="new-target-input" placeholder="Masukkan target baru">
+      <button id="save-target-button">Simpan</button>
+    </div>
+  {% else %}
+    <a class="btn-target" href="{% url 'progress_literasi:set_target' %}">Set Target Harian</a>
+  {% endif %}
+
+
+  <h2>Waktu Aktif Pengguna</h1>
+  <p class="d-inline-flex gap-1">
+    <a class="btn btn-primary" data-bs-toggle="collapse" href="#activity-history" role="button" aria-expanded="false" aria-controls="activity-history">Tampilkan Riwayat Aktivitas</a>
+  </p>
+
+  <div class="collapse" id="activity-history">
+    <h2>Riwayat Aktivitas Pengguna</h2>
+    <ul>
+      <li>
+        <strong>Tanggal:</strong>
+        <span id="realtime-date"></span> 
+        <strong>Waktu Aktif: {{ elapsed_time }}</strong>
+        <span id="realtime-activity"></span> 
+        <ul id="activity-history-list">
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <h2>Riwayat Buku</h2>
+  <div class="centered-container">
+      <div id="book_card" class="card-container">
+          <!-- Ini adalah div tempat kartu buku akan ditampilkan -->
+      </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var updateTargetButton = document.getElementById("update-target-button");
+    var resetTargetButton = document.getElementById("reset-target-button");
+    var targetInputContainer = document.getElementById("target-input-container");
+    var newTargetInput = document.getElementById("new-target-input");
+    var saveTargetButton = document.getElementById("save-target-button");
+    var targetMessage = document.getElementById("target-message");
+
+    // Menambahkan event listener ke tombol "Ubah Target"
+    updateTargetButton.addEventListener("click", function() {
+      updateTargetButton.style.display = "none";
+      resetTargetButton.style.display = "none";
+      targetInputContainer.style.display = "block";
+    });
+
+    // Menambahkan event listener ke tombol "Reset Target"
+    resetTargetButton.addEventListener("click", function() {
+      // Kirim permintaan AJAX untuk mereset target harian
+      fetch("{% url 'progress_literasi:reset_target' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+      })
+        .then(function(response) {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Gagal mereset target harian.");
+          }
+        })
+        .then(function(data) {
+          // Tampilkan pesan hasil
+          targetMessage.textContent = data.message;
+          // Perbarui tampilan target harian di halaman
+          var targetDisplay = document.querySelector("#target-buku");
+          targetDisplay.textContent = "0";
+          resetTargetButton.style.display = "none";
+          updateTargetButton.style.display = "block";
+        })
+        .catch(function(error) {
+          // Tampilkan pesan kesalahan
+          targetMessage.textContent = "Terjadi kesalahan: " + error.message;
+        });
+        targetInputContainer.style.display = "none";
+        updateTargetButton.style.display = "none";
+        resetTargetButton.style.display = "none";
+    });
+    
+    // Menambahkan event listener ke tombol "Simpan"
+    saveTargetButton.addEventListener("click", function() {
+      var newTarget = newTargetInput.value;
+
+      // Kirim permintaan AJAX untuk memperbarui target harian
+      var formData = new FormData();
+      formData.append("target_buku", newTarget);
+
+      fetch("{% url 'progress_literasi:update_target' %}", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": getCookie("csrftoken"),
+        },
+      })
+        .then(function(response) {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error("Gagal memperbarui target harian.");
+          }
+        })
+        .then(function(data) {
+          // Tampilkan pesan hasil
+          targetMessage.textContent = "Target harian berhasil diperbarui!";
+          // Perbarui tampilan target harian di halaman
+          var targetDisplay = document.querySelector("#target-buku");
+          targetDisplay.textContent = newTarget;
+          // Sembunyikan kembali input target setelah mengirim permintaan
+          targetInputContainer.style.display = "none";
+          updateTargetButton.style.display = "block";
+          resetTargetButton.style.display = "block";
+        })
+        .catch(function(error) {
+          // Tampilkan pesan kesalahan
+          targetMessage.textContent = "Terjadi kesalahan: " + error.message;
+        });
+    });
+
+    // Fungsi untuk mendapatkan nilai token CSRF
+    function getCookie(name) {
+      var value = `; ${document.cookie}`;
+      var parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+  });
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var dateElement = document.getElementById("realtime-date")
+    var activityElement = document.getElementById("realtime-activity");
+    var userId = "{{ user.id }}";
+    var loginTimestamp = localStorage.getItem("loginTimestamp_" + userId);
+    var activityHistoryList = document.getElementById("activity-history-list");
+
+    // Fungsi untuk menambahkan riwayat waktu aktivitas
+    function addActivityHistory(timeString, dateString) {
+            var listItem = document.createElement("li");
+            listItem.innerHTML = `
+                <strong>Tanggal:</strong> ${dateString}
+                <strong>Waktu Aktif:</strong> ${timeString}
+            `;
+            activityHistoryList.appendChild(listItem);
+
+            // Batasi riwayat waktu hingga maksimal 5 baris
+            if (activityHistoryList.children.length > 5) {
+                activityHistoryList.removeChild(activityHistoryList.firstElementChild);
+            }
+        }
+
+    // Fungsi untuk mengupdate waktu aktif sebagai timer
+    function updateActivityTimer() {
+      var now = new Date();
+      var dateString = now.toLocaleDateString();
+      var currentTime = Date.now();
+      var elapsedTime = Math.floor((currentTime - loginTimestamp) / 1000); // Calculate elapsed time in seconds
+
+      if (!loginTimestamp) {
+        // Jika loginTimestamp belum ada, inisialisasi dengan waktu saat ini
+        loginTimestamp = currentTime;
+        localStorage.setItem("loginTimestamp_" + userId, loginTimestamp);
+      }
+
+      if (elapsedTime >= 36000) {
+        // Jika lebih dari 10 jam, inisialisasi waktu dari awal
+        loginTimestamp = currentTime;
+        localStorage.setItem("loginTimestamp", loginTimestamp);
+        elapsedTime = 0;
+
+        // Konversi waktu ke format jam:menit:detik
+        var hours = Math.floor(elapsedTime / 3600);
+        var minutes = Math.floor((elapsedTime % 3600) / 60);
+        var seconds = elapsedTime % 60;
+        
+
+        // Format waktu
+        var timeString = hours.toString().padStart(2, '0') + ':' +
+                        minutes.toString().padStart(2, '0') + ':' +
+                        seconds.toString().padStart(2, '0');
+        
+        addActivityHistory(timeString, dateString);
+      }
+
+      // Konversi waktu ke format jam:menit:detik
+      var hours = Math.floor(elapsedTime / 3600);
+      var minutes = Math.floor((elapsedTime % 3600) / 60);
+      var seconds = elapsedTime % 60;
+
+
+      // Format waktu
+      var timeString = hours.toString().padStart(2, '0') + ':' +
+                      minutes.toString().padStart(2, '0') + ':' +
+                      seconds.toString().padStart(2, '0');
+      activityElement.textContent = timeString;
+      dateElement.textContent = dateString;
+    }
+
+    var timerIntervalId = setInterval(updateActivityTimer, 1000);
+
+    function handleLogout() {
+      clearInterval(timerIntervalId);
+
+    }
+
+    var logoutButton = document.getElementById("btn-logout");
+      if (logoutButton) {
+        logoutButton.addEventListener("click", function() {
+          console.log("logout bang")
+          handleLogout();
+        });
+      }
+
+    updateActivityTimer();
+
+  });
+  </script>
+
+<script>
+  // Your JavaScript code here
+  async function getReadingHistory() {
+      return fetch("{% url 'my_profile:get_reading_history_json' %}").then((res) => res.json());
+  }
+
+  async function displayReadingHistory() {
+      const readingHistory = await getReadingHistory();
+
+      let htmlString = '<div class="card-row">';
+      let cardCount = 0;
+      readingHistory.forEach((item) => {
+          const rating = item.fields.rating_count === 0 ? "No Rating" : item.fields.rating;
+          console.log(item)
+          htmlString += `\n<div class="card">
+              <img class="card-img-top" src="https://covers.openlibrary.org/b/isbn/${item.fields.isbn}-M.jpg" alt="Card image cap" style="width: 100%; height: 200px; object-fit: cover;">
+              <div class="card-body">
+                  <p class="card-text"><b>${item.fields.title}</b></p>
+                  <p class="card-text">${rating}</p>
+                  <a href="#" class="btn btn-primary">Detail</a>
+              </div>
+          </div>`;
+
+          cardCount++;
+          if (cardCount === 8) {
+              htmlString += '</div><div class="card-row">';
+              cardCount = 0;
+          }
+      });
+
+      htmlString += '</div>';
+
+      const bookCard = document.getElementById("book_card");
+      bookCard.innerHTML = htmlString;
+  }
+
+  displayReadingHistory();
+</script>
+  
+{% endblock content %}

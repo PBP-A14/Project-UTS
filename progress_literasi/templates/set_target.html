@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+  h1 {
+    text-align: center;
+    margin-top: 80px;
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+
+  form {
+    margin-left: 15px;
+    margin-bottom: 30px;
+  }
+
+  a.btn-kembali {
+    margin: 30px auto auto 15px;
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  button.btn-submit {
+    background-color: #0077cc;
+    color: #fff;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+
+</style>
+
+  <h1>Set Target Baca Harian</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.target_buku.label_tag }} {{ form.target_buku }}
+    <button class="btn-submit" type="submit">Simpan</button>
+  </form>
+  <a class="btn-kembali" href="{% url 'progress_literasi:progress' %}">Kembali ke Daftar Buku</a>
+
+  {% endblock %}
