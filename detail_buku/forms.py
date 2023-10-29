@@ -14,7 +14,3 @@ class BookRatingForm(forms.ModelForm):
 class LikeBookForm(forms.Form):
     # This form can be empty because liking doesn't require user input
     pass
-
-class BookmarkBookForm(forms.Form):
-    # This form can be empty because bookmarking doesn't require user input
-    pass

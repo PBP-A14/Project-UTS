@@ -8,8 +8,7 @@ class Book(models.Model):
     author = models.CharField(max_length=100)
     published_date = models.DateField()
     synopsis = models.TextField()
-    likes = models.IntegerField(default=0)
-    bookmarked_by = models.ManyToManyField(User, related_name='bookmarks', blank=True)
+    likes = models.IntegerField(default=0)\
     
     def __str__(self):
         return self.title
@@ -31,20 +30,11 @@ class BookReview(models.Model):
     reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE)
     review_text = models.TextField()
 
-# Model for Book Bookmarks
-class BookBookmark(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    bookmarked_by = models.ForeignKey(User, on_delete=models.CASCADE)
-
 # Model for Book Ratings
 class BookRating(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     rated_by = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.PositiveIntegerField()
-
-class Bookmark(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
 
 class Review(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)

@@ -53,7 +53,7 @@
                 <div class="card-body">
                     <p class="card-text"><b>${item.fields.title}</b></p>
                     <p class="card-text">${rating}</p>
-                    <a href="#" class="btn btn-primary">Detail</a>
+                    <a href="{% url 'detail_buku:detail_buku' book.id %}" class="btn btn-primary">Detail</a>
                 </div>
             </div>`;
 

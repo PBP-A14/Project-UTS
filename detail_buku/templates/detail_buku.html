@@ -23,16 +23,6 @@
         {% endfor %}
     </ul>
     
-    <!-- Display book bookmarks -->
-    <h2>Bookmarks</h2>
-    <ul>
-        {% for bookmark in bookmarks %}
-            <li>{{ bookmark.bookmarked_by.username }}</li>
-        {% empty %}
-            <li>No bookmarks yet.</li>
-        {% endfor %}
-    </ul>
-    
     <!-- Display book average rating -->
     <h2>Average Rating</h2>
     <p>{{ average_rating }}</p>
