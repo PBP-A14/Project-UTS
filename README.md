@@ -18,6 +18,14 @@ Sarah Nazly Nuraya - 2206082581
 
 #
 <details>
+<Summary>Link Deployment :</summary>
+<br>
+http://elibrary-a14-tk.pbp.cs.ui.ac.id
+</br>
+</details>
+
+#
+<details>
 <Summary>Aplikasi dan manfaatnya</Summary>
 <br>
 Aplikasi E-Library merupakan aplikasi perpustakaan online yang dapat diakses oleh masyarakat dari mana saja. Aplikasi ini dapat memberikan pilihan bacaan kepada user dan juga memberikan rekomendasi buku yang paling populer untuk dibaca. Dengan memanfaatkan aplikasi ini, user dapat meningkatkan minat literasi dan juga dapat mengetahui progress dari literasi yang dimiliki dengan fitur track jumlah buku yang sudah dibaca dan waktu baca buku dalam 1 hari. 
