@@ -327,7 +327,7 @@
         localStorage.setItem("loginTimestamp_" + userId, loginTimestamp);
       }
 
-      if (elapsedTime >= 36000) {
+      if (elapsedTime >= 18000) {
         // Jika lebih dari 10 jam, inisialisasi waktu dari awal
         loginTimestamp = currentTime;
         localStorage.setItem("loginTimestamp", loginTimestamp);
@@ -351,7 +351,14 @@
     var timerIntervalId = setInterval(updateActivityTimer, 1000);
 
     function handleLogout() {
-      clearInterval(timerIntervalId);
+      loginTimestamp = null;
+      localStorage.removeItem("loginTimestamp_" + userId);
+
+      // Inisialisasi timer dengan waktu saat logout
+      updateActivityTimer();
+
+      // Buat interval timer baru untuk pengguna yang login kembali
+      timerIntervalId = setInterval(updateActivityTimer, 1000);
 
     }
 
