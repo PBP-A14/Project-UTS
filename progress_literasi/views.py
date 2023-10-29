@@ -41,6 +41,7 @@ def progress(request):
         user_profile = None
         target_buku = 0
 
+<<<<<<< HEAD
     # reading_history, created = ReadingHistory.objects.get_or_create(user=user)   
     # book_count = reading_history.books.count()
     # selisih = target_buku - book_count
@@ -50,11 +51,23 @@ def progress(request):
         # 'progress': user_profile.progress,
         # 'book_count': book_count,
         # 'selisih': selisih,
+=======
+    reading_history, created = ReadingHistory.objects.get_or_create(user=user)   
+    book_count = reading_history.books.count()
+    selisih = target_buku - book_count
+
+    context = {
+        'target_buku': target_buku,
+        'progress': user_profile.progress,
+        'book_count': book_count,
+        'selisih': selisih,
+>>>>>>> 949a3c6412f47566f6c500ba442255e240121f9b
     }
 
     return render(request, 'progress.html', context)
 
 @login_required
+<<<<<<< HEAD
 def get_text_progress(request):
     user = request.user
     user_profile = None
@@ -117,6 +130,30 @@ def update_target(request):
     return JsonResponse(response_data)
 
 @login_required
+=======
+def update_target(request):
+    if request.method == 'POST':
+        target_buku = request.POST.get('target_buku')
+        
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        update_target = request.POST.get('update_target')
+        if target_buku is None:
+            target_buku = 0
+        
+        if update_target == '0':
+            user_profile.target_buku = 0
+        
+        user_profile.target_buku = target_buku
+        user_profile.save()
+
+        response_data = {'status': 'success', 'message': 'Target harian berhasil diperbarui.'}
+        return JsonResponse(response_data)
+    
+    response_data = {'status': 'error', 'message': 'Permintaan tidak valid.'}
+    return JsonResponse(response_data)
+
+@login_required
+>>>>>>> 949a3c6412f47566f6c500ba442255e240121f9b
 def reset_target(request):
     try:
         user_profile = UserProfile.objects.get(user=request.user)
@@ -127,7 +164,10 @@ def reset_target(request):
         return JsonResponse({'success': False, 'message': 'Profil pengguna tidak ditemukan.'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+<<<<<<< HEAD
 
+=======
+>>>>>>> 949a3c6412f47566f6c500ba442255e240121f9b
 
 @login_required
 def read_book(request, book_id):
@@ -135,7 +175,11 @@ def read_book(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     buku_dibaca, created = BukuDibaca.objects.get_or_create(user=user, buku=book)
     reading_history, created = ReadingHistory.objects.get_or_create(user=user)
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 949a3c6412f47566f6c500ba442255e240121f9b
     reading_history.books.add(buku_dibaca)
     reading_history.save()
 

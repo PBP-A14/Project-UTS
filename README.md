@@ -68,15 +68,13 @@ c.) Search Bar
 ##
 **Modul Admin :**
 ###
-a.) Add Buku
+a.) Add, Remove, dan Edit Buku
 
-b.) Remove
+b.) Melihat Data dan Hapus Akun User
 
-c.) Edit
+c.) Melihat Log
 
-d.) Melihat Data Akun User
-
-e.) Hapus Akun User
+d.) Modul Admin hanya dapat diakses oleh Admin
 ##
 **Modul Literasi :**
 ###
@@ -163,7 +161,7 @@ Isinya adalah buku-buku yang telah ditambahkan oleh user ke dalam bookmark.
 ##
 **Admin :**
 
-Admin e-library memiliki akses untuk menambahkan buku pada sistem, menghapus buku, melakukan pengubahan terhadap detail buku, melihat list akun yang terdaftar dalam sistem, dan juga dapat menghapus akun dari sistem.
+Admin e-library memiliki akses untuk menambahkan buku pada sistem, menghapus buku, melakukan pengubahan terhadap detail buku, melihat list akun yang terdaftar dalam sistem, menghapus akun dari sistem, dan juga dapat melihat log.
 
 ##
 **Guest :** 
