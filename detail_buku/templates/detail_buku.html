@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>{{ book.title }}</h1>
+    
+    <!-- Display book details, such as views, likes, synopsis, etc. -->
+    <p>Views: {{ view_count }}</p>
+    <p>Likes: {{ like_count }}</p>
+    
+    <!-- Display book synopsis -->
+    <h2>Synopsis</h2>
+    <p>{{ book.synopsis }}</p>
+    
+    <!-- Display book reviews -->
+    <h2>Reviews</h2>
+    <ul>
+        {% for review in reviews %}
+            <li>
+                <strong>{{ review.user.username }}</strong> said on {{ review.created_at }}:
+                <p>{{ review.text }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    
+    <!-- Display book bookmarks -->
+    <h2>Bookmarks</h2>
+    <ul>
+        {% for bookmark in bookmarks %}
+            <li>{{ bookmark.bookmarked_by.username }}</li>
+        {% empty %}
+            <li>No bookmarks yet.</li>
+        {% endfor %}
+    </ul>
+    
+    <!-- Display book average rating -->
+    <h2>Average Rating</h2>
+    <p>{{ average_rating }}</p>
+</div>
+{% endblock content %}

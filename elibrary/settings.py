@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'authentication',
     'my_profile',
     'admin_app',
+    'detail_buku'
 ]
 
 MIDDLEWARE = [

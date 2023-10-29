@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block meta %}
+    <title>Submit Review</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 500px;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+        }
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 16px;
+        }
+        textarea {
+            height: 150px;
+        }
+        .submit-button {
+            background-color: #007BFF;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 3px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock meta %}
+
+{% block content %}
+    <div class="container">
+        <h1>Submit a Review</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="review_text">Your Review</label>
+                <textarea id="review_text" name="review_text" placeholder="Write your review here" required></textarea>
+            </div>
+            <button class="submit-button" type="submit">Submit Review</button>
+        </form>
+    </div>
+{% endblock content %}
