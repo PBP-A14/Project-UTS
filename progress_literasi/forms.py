@@ -1,7 +1,7 @@
-from django import forms
+from django.forms import ModelForm
 from .models import TargetHarian
 
-class TargetHarianForm(forms.ModelForm):
+class DailyTargetForm(ModelForm):
     class Meta:
         model = TargetHarian
-        fields = ['tanggal', 'target_buku']
+        fields = ['target_buku']

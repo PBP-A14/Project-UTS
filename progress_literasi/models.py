@@ -1,20 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from home.models import Book
-
-# Create your models here.
-# class Book(models.Model):
-#     title = models.CharField(max_length=255)
-#     description = models.TextField()
-#     authors = models.CharField(max_length=255)
-#     isbn = models.CharField(max_length=150)
-#     num_pages = models.IntegerField()
-#     publisher = models.CharField(max_length=150)
-#     rating_count = models.IntegerField()
-#     rating = models.FloatField()
-
-#     def __str__(self):
-#         return self.title
     
 class ProgressBaca(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -24,15 +10,9 @@ class ProgressBaca(models.Model):
 
 class TargetHarian(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    tanggal = models.DateField()
-    target_buku = models.IntegerField()
-
-class AktivitasUser(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    tanggal = models.DateField()
-    waktu_aktif = models.PositiveIntegerField(default=0)
+    target_buku = models.PositiveIntegerField()
 
 class BukuDibaca(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    buku = models.ForeignKey(Book, on_delete=models.CASCADE) 
-    tanggal_dibaca = models.DateField(auto_now_add=True)
+    buku = models.ForeignKey(Book, on_delete=models.CASCADE)
+    counted = models.IntegerField(default=0)
