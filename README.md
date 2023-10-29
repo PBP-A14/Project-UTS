@@ -106,9 +106,7 @@ e.) Sinopsis Buku
 
 **Sumber Dataset :**
 
-1.) https://developers.google.com/books/ (Google Books API)
-
-2.) https://www.gutenberg.org/ebooks/offline_catalogs.html (Project Gutenberg)
+1.) https://www.kaggle.com/datasets?search=book (Kaggle)
 
 
 </details>
