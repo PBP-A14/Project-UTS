@@ -1,2 +1,2 @@
 release: django-admin migrate --noinput
-web: gunicorn Project-UTS.wsgi
+web: gunicorn elibrary.wsgi

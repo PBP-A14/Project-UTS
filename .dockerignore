@@ -19,7 +19,7 @@ dist
 docs
 env
 logs
-src/{{ Project-UTS }}/settings/local.py
+src/{{ elibrary }}/settings/local.py
 src/node_modules
 web/media
 web/static/CACHE
