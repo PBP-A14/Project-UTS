@@ -1,0 +1,229 @@
+
+h1 {
+font-size: 36px;
+color: #333;
+align-items: center;
+justify-content: center;
+text-align: center;
+margin-top: 80px;
+margin-bottom: 20px;
+}
+
+h2 {
+font-size: 20px;
+color: #000000;
+margin-left: 15px;
+margin-top: 15px
+}
+
+ul {
+list-style: none;
+}
+
+li {
+margin: 5px 0;
+margin-left: 0px;
+font-size: 16px;
+color: #555;
+}
+
+li.waktu-aktif {
+margin: 5px 0;
+margin-left: 15px;
+font-size: 16px;
+color: #555;
+}
+
+a.btn-target {
+background-color: #0077cc;
+color: #fff;
+padding: 7px 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+margin-left: 15px;
+text-decoration: none;
+}
+
+p {
+margin-left: 15px;
+}
+
+strong#progress-text {
+margin-left: 15px;
+}
+
+.modal {
+display: none;
+position: fixed;
+z-index: 1;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+overflow: auto;
+background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+background-color: #fefefe;
+padding: 20px;
+border: 1px solid #888;
+width: 60%;
+box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2);
+justify-content: center;
+position: relative;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+}
+
+.close {
+color: #aaaaaa;
+font-size: 28px;
+font-weight: bold;
+cursor: pointer;
+position: relative;
+top: 0;
+margin-right: 0;
+margin-bottom: 10px;
+
+}
+
+.close:hover {
+color: #000;
+}
+
+form {
+margin-left: 15px;
+margin-bottom: 30px;
+}
+
+a.btn-kembali {
+margin: 30px auto auto 15px;
+background-color: #0077cc;
+color: #fff;
+padding: 7px 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+text-decoration: none;
+}
+
+button.btn-submit {
+background-color: #0077cc;
+color: #fff;
+padding: 7px 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+margin-left: 5px;
+}
+
+#new-target-input {
+width: 100%;
+padding: 10px;
+margin: 10px 0;
+border: 1px solid #ccc;
+border-radius: 4px;
+box-sizing: border-box;
+}
+
+#save-target-button {
+background-color: #008CBA;
+color: white;
+padding: 10px 20px;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+justify-content: center;
+}
+
+#save-target-button:hover {
+background-color: #023b64;
+}
+
+.btn.btn-primary {
+background-color: #0077cc;
+color: #fff;
+padding: 7px 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+margin-left: 0px;
+margin-top: 10px;
+}
+
+.button-container {
+display: flex;
+justify-content: flex-start;
+align-items: center;
+}
+
+#update-target-button {
+display: inline-block;
+background-color: #0077cc;
+color: #fff;
+padding: 7px 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+margin-left: 30px;
+margin-top: 10px;
+}
+
+#reset-target-button {
+display: inline-block;
+background-color: #0077cc;
+color: #fff;
+padding: 7px 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+margin-left: 10px;
+margin-top: 10px;
+}
+
+button#save-target-button {
+background-color: #0077cc;
+color: #fff;
+padding: 7px 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+margin-left: 5px;
+margin-top: 0px;
+}
+
+#target-input-container {
+color: #fff;
+padding: 7px 10px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+margin-left: 20px;
+margin-top: 0px;
+}
+
+.centered-container {
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.card-row {
+display: flex;
+flex-wrap: wrap;
+}
+
+.card {
+width: 8rem;
+margin: 10px;
+}
+
+.card-text {
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+max-width: 100%;
+}
