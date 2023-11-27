@@ -8,9 +8,9 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import logout as auth_logout
-
 from my_profile.models import ReadingHistory
 
+# Create your views here.
 def register(request):
     form = UserCreationForm()
 
@@ -48,7 +48,7 @@ def logout_user(request):
 
 # Method untuk flutter
 @csrf_exempt
-def login(request):
+def login_mobile(request):
     username = request.POST['username']
     password = request.POST['password']
     user = authenticate(username=username, password=password)
@@ -79,7 +79,7 @@ def login(request):
     
 
 @csrf_exempt
-def logout(request):
+def logout_mobile(request):
     username = request.user.username
 
     try:

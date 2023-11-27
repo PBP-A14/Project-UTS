@@ -30,6 +30,13 @@
     color: #555;
   }
 
+  li.waktu-aktif {
+    margin: 5px 0;
+    margin-left: 15px;
+    font-size: 16px;
+    color: #555;
+  }
+
   a.btn-target {
     background-color: #0077cc;
     color: #fff;
@@ -45,8 +52,72 @@
     margin-left: 15px;
   }
 
-  strong.text-progress {
+  strong#progress-text {
     margin-left: 15px;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2);
+    justify-content: center;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .close {
+    color: #aaaaaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    top: 0;
+    margin-right: 0;
+    margin-bottom: 10px;
+
+  }
+
+  .close:hover {
+    color: #000;
+  }
+
+  #new-target-input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  #save-target-button {
+    background-color: #008CBA;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    justify-content: center;
+  }
+
+  #save-target-button:hover {
+    background-color: #023b64;
   }
 
   .btn.btn-primary {
@@ -137,24 +208,8 @@
 </style>
 
   <h1>Progress Literasi Anda</h1>
-  <strong class="text-progress">
-    {% if target_buku is not None %}
-        {% if book_count == target_buku %}
-          Selamat, proses jelajahmu sudah mencapai target!
-        {% else %}
-          {% if selisih is not None %}
-            {% if selisih > 0 %}
-              Kamu harus membaca {{ selisih }} buku untuk mencapai target jelajahmu!
-            {% else %}
-              Ayo segera mulai petualangan imajinasimu melalui buku!
-            {% endif %}
-          {% else %}
-            Segera tentukan target jelajahmu!
-          {% endif %}
-        {% endif %}
-    {% else %}
-      <li>Segera tentukan target jelajahmu!</li>
-    {% endif %}
+  <br>
+  <strong id="progress-text">
   </strong>
 
   <h2>Target Baca Harian Anda</h2>
@@ -171,42 +226,52 @@
       <button id="update-target-button">Update Target</button>
       <button id="reset-target-button">Reset Target</button>
     </div>
-    <div id="target-input-container" style="display: none;">
-      <input type="number" id="new-target-input" placeholder="Masukkan target baru">
-      <button id="save-target-button">Simpan</button>
+    <div id="target-input-container" class="modal g-0 container-fluid" style="display: none;">
+      <div class="modal-content">
+        <span class="close" id="close-target-modal">&times;</span>
+        <input type="number" id="new-target-input" placeholder="Masukkan target baru">
+        <button id="save-target-button">Simpan</button>
+      </div>
     </div>
+    {% comment %} Add the modal style to your CSS {% endcomment %}
   {% else %}
     <a class="btn-target" href="{% url 'progress_literasi:set_target' %}">Set Target Harian</a>
   {% endif %}
 
-
   <h2>Waktu Aktif Pengguna</h1>
-  <p class="d-inline-flex gap-1">
-    <a class="btn btn-primary" data-bs-toggle="collapse" href="#activity-history" role="button" aria-expanded="false" aria-controls="activity-history">Tampilkan Riwayat Aktivitas</a>
-  </p>
-
-  <div class="collapse" id="activity-history">
-    <h2>Riwayat Aktivitas Pengguna</h2>
-    <ul>
-      <li>
-        <strong>Tanggal:</strong>
-        <span id="realtime-date"></span> 
-        <strong>Waktu Aktif: {{ elapsed_time }}</strong>
-        <span id="realtime-activity"></span> 
-        <ul id="activity-history-list">
-        </ul>
-      </li>
-    </ul>
-  </div>
+  <li class="waktu-aktif">
+    <strong>Tanggal:</strong>
+    <span id="realtime-date"></span> 
+    <strong>Waktu Aktif: {{ elapsed_time }}</strong>
+    <span id="realtime-activity"></span> 
+  </li>
 
   <h2>Riwayat Buku</h2>
   <div class="centered-container">
       <div id="book_card" class="card-container">
-          <!-- Ini adalah div tempat kartu buku akan ditampilkan -->
       </div>
   </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+      async function updateProgressText() {
+        try {
+          const response = await fetch("{% url 'progress_literasi:get_text_progress' %}");
+          if (!response.ok) {
+            throw new Error("Gagal mengambil data kemajuan.");
+          }
+          const data = await response.json();
+          document.getElementById("progress-text").textContent = data.text_progress;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      updateProgressText();
+
+      setInterval(updateProgressText, 1000);
+    });
+  </script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
@@ -216,6 +281,7 @@
     var newTargetInput = document.getElementById("new-target-input");
     var saveTargetButton = document.getElementById("save-target-button");
     var targetMessage = document.getElementById("target-message");
+    var closeTargetModal = document.getElementById("close-target-modal");
 
     // Menambahkan event listener ke tombol "Ubah Target"
     updateTargetButton.addEventListener("click", function() {
@@ -297,6 +363,13 @@
         });
     });
 
+    // Menambahkan event listener ke tombol "Close" di modal
+    closeTargetModal.addEventListener("click", function() {
+      targetInputContainer.style.display = "none";
+      updateTargetButton.style.display = "block";
+      resetTargetButton.style.display = "block";
+    });
+
     // Fungsi untuk mendapatkan nilai token CSRF
     function getCookie(name) {
       var value = `; ${document.cookie}`;
@@ -312,22 +385,6 @@
     var activityElement = document.getElementById("realtime-activity");
     var userId = "{{ user.id }}";
     var loginTimestamp = localStorage.getItem("loginTimestamp_" + userId);
-    var activityHistoryList = document.getElementById("activity-history-list");
-
-    // Fungsi untuk menambahkan riwayat waktu aktivitas
-    function addActivityHistory(timeString, dateString) {
-            var listItem = document.createElement("li");
-            listItem.innerHTML = `
-                <strong>Tanggal:</strong> ${dateString}
-                <strong>Waktu Aktif:</strong> ${timeString}
-            `;
-            activityHistoryList.appendChild(listItem);
-
-            // Batasi riwayat waktu hingga maksimal 5 baris
-            if (activityHistoryList.children.length > 5) {
-                activityHistoryList.removeChild(activityHistoryList.firstElementChild);
-            }
-        }
 
     // Fungsi untuk mengupdate waktu aktif sebagai timer
     function updateActivityTimer() {
@@ -342,24 +399,11 @@
         localStorage.setItem("loginTimestamp_" + userId, loginTimestamp);
       }
 
-      if (elapsedTime >= 36000) {
-        // Jika lebih dari 10 jam, inisialisasi waktu dari awal
+      if (elapsedTime >= 18000) {
+        // Jika lebih dari 5 jam, inisialisasi waktu dari awal
         loginTimestamp = currentTime;
         localStorage.setItem("loginTimestamp", loginTimestamp);
         elapsedTime = 0;
-
-        // Konversi waktu ke format jam:menit:detik
-        var hours = Math.floor(elapsedTime / 3600);
-        var minutes = Math.floor((elapsedTime % 3600) / 60);
-        var seconds = elapsedTime % 60;
-        
-
-        // Format waktu
-        var timeString = hours.toString().padStart(2, '0') + ':' +
-                        minutes.toString().padStart(2, '0') + ':' +
-                        seconds.toString().padStart(2, '0');
-        
-        addActivityHistory(timeString, dateString);
       }
 
       // Konversi waktu ke format jam:menit:detik
@@ -379,7 +423,14 @@
     var timerIntervalId = setInterval(updateActivityTimer, 1000);
 
     function handleLogout() {
-      clearInterval(timerIntervalId);
+      loginTimestamp = null;
+      localStorage.removeItem("loginTimestamp_" + userId);
+
+      // Inisialisasi timer dengan waktu saat logout
+      updateActivityTimer();
+
+      // Buat interval timer baru untuk pengguna yang login kembali
+      timerIntervalId = setInterval(updateActivityTimer, 1000);
 
     }
 
@@ -397,7 +448,6 @@
   </script>
 
 <script>
-  // Your JavaScript code here
   async function getReadingHistory() {
       return fetch("{% url 'my_profile:get_reading_history_json' %}").then((res) => res.json());
   }

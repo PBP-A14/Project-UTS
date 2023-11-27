@@ -18,6 +18,14 @@ Sarah Nazly Nuraya - 2206082581
 
 #
 <details>
+<Summary>Link Deployment :</summary>
+<br>
+http://elibrary-a14-tk.pbp.cs.ui.ac.id
+</br>
+</details>
+
+#
+<details>
 <Summary>Aplikasi dan manfaatnya</Summary>
 <br>
 Aplikasi E-Library merupakan aplikasi perpustakaan online yang dapat diakses oleh masyarakat dari mana saja. Aplikasi ini dapat memberikan pilihan bacaan kepada user dan juga memberikan rekomendasi buku yang paling populer untuk dibaca. Dengan memanfaatkan aplikasi ini, user dapat meningkatkan minat literasi dan juga dapat mengetahui progress dari literasi yang dimiliki dengan fitur track jumlah buku yang sudah dibaca dan waktu baca buku dalam 1 hari. 
@@ -60,15 +68,13 @@ c.) Search Bar
 ##
 **Modul Admin :**
 ###
-a.) Add Buku
+a.) Add, Remove, dan Edit Buku
 
-b.) Remove
+b.) Melihat Data dan Hapus Akun User
 
-c.) Edit
+c.) Melihat Log
 
-d.) Melihat Data Akun User
-
-e.) Hapus Akun User
+d.) Modul Admin hanya dapat diakses oleh Admin
 ##
 **Modul Literasi :**
 ###
@@ -98,9 +104,7 @@ e.) Sinopsis Buku
 
 **Sumber Dataset :**
 
-1.) https://developers.google.com/books/ (Google Books API)
-
-2.) https://www.gutenberg.org/ebooks/offline_catalogs.html (Project Gutenberg)
+1.) https://www.kaggle.com/datasets?search=book (Kaggle)
 
 
 </details>
@@ -157,7 +161,7 @@ Isinya adalah buku-buku yang telah ditambahkan oleh user ke dalam bookmark.
 ##
 **Admin :**
 
-Admin e-library memiliki akses untuk menambahkan buku pada sistem, menghapus buku, melakukan pengubahan terhadap detail buku, melihat list akun yang terdaftar dalam sistem, dan juga dapat menghapus akun dari sistem.
+Admin e-library memiliki akses untuk menambahkan buku pada sistem, menghapus buku, melakukan pengubahan terhadap detail buku, melihat list akun yang terdaftar dalam sistem, menghapus akun dari sistem, dan juga dapat melihat log.
 
 ##
 **Guest :** 
