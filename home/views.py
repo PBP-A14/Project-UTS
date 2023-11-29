@@ -64,3 +64,11 @@ def search(request, query):
         'rating_count': book.rating_count,
     }} for book in books]
     return JsonResponse(data, safe=False)
+
+def sort_az(request):
+    data = Book.objects.order_by('title')
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+
+def sort_za(request):
+    data = Book.objects.order_by('-title')
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
