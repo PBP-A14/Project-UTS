@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'admin_app',
     'progress_literasi',
     'corsheaders',
+    'book',
 ]
 
 MIDDLEWARE = [
