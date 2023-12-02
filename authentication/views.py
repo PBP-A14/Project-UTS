@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.contrib import messages  
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
@@ -74,10 +75,24 @@ def login_mobile(request):
             "message": "Incorrect username or password."
         }, status=401)
     
-# @csrf_exempt
-# def register(request):
+@csrf_exempt
+def register_mobile(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    try:
+        user = User.objects.create_user(username=username, password=password)
+        user.save()
+        return JsonResponse({
+            "username": user.username,
+            "status": True,
+            "message": "Sign up success!"
+        }, status=200)
+    except:
+        return JsonResponse({
+            "status": False,
+            "message": "Sign up failed."
+        }, status=401)
     
-
 @csrf_exempt
 def logout_mobile(request):
     username = request.user.username
