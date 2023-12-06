@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from home.models import Book
+from book.models import Book
 from admin_app.models import Log
 from django.db.models import Q
 from datetime import datetime

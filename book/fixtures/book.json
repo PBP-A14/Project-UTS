@@ -1,0 +1,1402 @@
+[
+  {
+    "pk": 1,
+    "model": "book.book",
+    "fields": {
+      "title": "Harry Potter and the Half-Blood Prince (Harry Potter  #6)",
+      "description": "-",
+      "authors": "J.K. Rowling/Mary GrandPr�",
+      "isbn": "0439785960",
+      "num_pages": 652,
+      "publisher": "Scholastic Inc.",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 2,
+    "model": "book.book",
+    "fields": {
+      "title": "Harry Potter and the Order of the Phoenix (Harry Potter  #5)",
+      "description": "-",
+      "authors": "J.K. Rowling/Mary GrandPr�",
+      "isbn": "0439358078",
+      "num_pages": 870,
+      "publisher": "Scholastic Inc.",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 3,
+    "model": "book.book",
+    "fields": {
+      "title": "Harry Potter and the Chamber of Secrets (Harry Potter  #2)",
+      "description": "-",
+      "authors": "J.K. Rowling",
+      "isbn": "0439554896",
+      "num_pages": 352,
+      "publisher": "Scholastic",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 4,
+    "model": "book.book",
+    "fields": {
+      "title": "Harry Potter and the Prisoner of Azkaban (Harry Potter  #3)",
+      "description": "-",
+      "authors": "J.K. Rowling/Mary GrandPr�",
+      "isbn": "043965548X",
+      "num_pages": 435,
+      "publisher": "Scholastic Inc.",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 5,
+    "model": "book.book",
+    "fields": {
+      "title": "Harry Potter Boxed Set  Books 1-5 (Harry Potter  #1-5)",
+      "description": "-",
+      "authors": "J.K. Rowling/Mary GrandPr�",
+      "isbn": "0439682584",
+      "num_pages": 2690,
+      "publisher": "Scholastic",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 6,
+    "model": "book.book",
+    "fields": {
+      "title": "Unauthorized Harry Potter Book Seven News: \"Half-Blood Prince\" Analysis and Speculation",
+      "description": "-",
+      "authors": "W. Frederick Zimmerman",
+      "isbn": "0976540606",
+      "num_pages": 152,
+      "publisher": "Nimble Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 7,
+    "model": "book.book",
+    "fields": {
+      "title": "Harry Potter Collection (Harry Potter  #1-6)",
+      "description": "-",
+      "authors": "J.K. Rowling",
+      "isbn": "0439827604",
+      "num_pages": 3342,
+      "publisher": "Scholastic",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 8,
+    "model": "book.book",
+    "fields": {
+      "title": "The Ultimate Hitchhiker's Guide: Five Complete Novels and One Story (Hitchhiker's Guide to the Galaxy  #1-5)",
+      "description": "-",
+      "authors": "Douglas Adams",
+      "isbn": "0517226952",
+      "num_pages": 815,
+      "publisher": "Gramercy Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 9,
+    "model": "book.book",
+    "fields": {
+      "title": "The Ultimate Hitchhiker's Guide to the Galaxy (Hitchhiker's Guide to the Galaxy  #1-5)",
+      "description": "-",
+      "authors": "Douglas Adams",
+      "isbn": "0345453743",
+      "num_pages": 815,
+      "publisher": "Del Rey Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 10,
+    "model": "book.book",
+    "fields": {
+      "title": "The Hitchhiker's Guide to the Galaxy (Hitchhiker's Guide to the Galaxy  #1)",
+      "description": "-",
+      "authors": "Douglas Adams",
+      "isbn": 1400052920,
+      "num_pages": 215,
+      "publisher": "Crown",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 11,
+    "model": "book.book",
+    "fields": {
+      "title": "The Hitchhiker's Guide to the Galaxy (Hitchhiker's Guide to the Galaxy  #1)",
+      "description": "-",
+      "authors": "Douglas Adams/Stephen Fry",
+      "isbn": "0739322206",
+      "num_pages": 6,
+      "publisher": "Random House Audio",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 12,
+    "model": "book.book",
+    "fields": {
+      "title": "The Ultimate Hitchhiker's Guide (Hitchhiker's Guide to the Galaxy  #1-5)",
+      "description": "-",
+      "authors": "Douglas Adams",
+      "isbn": "0517149257",
+      "num_pages": 815,
+      "publisher": "Wings Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 13,
+    "model": "book.book",
+    "fields": {
+      "title": "A Short History of Nearly Everything",
+      "description": "-",
+      "authors": "Bill Bryson",
+      "isbn": "076790818X",
+      "num_pages": 544,
+      "publisher": "Broadway Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 14,
+    "model": "book.book",
+    "fields": {
+      "title": "Bill Bryson's African Diary",
+      "description": "-",
+      "authors": "Bill Bryson",
+      "isbn": "0767915062",
+      "num_pages": 55,
+      "publisher": "Broadway Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 15,
+    "model": "book.book",
+    "fields": {
+      "title": "Bryson's Dictionary of Troublesome Words: A Writer's Guide to Getting It Right",
+      "description": "-",
+      "authors": "Bill Bryson",
+      "isbn": "0767910435",
+      "num_pages": 256,
+      "publisher": "Broadway Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 16,
+    "model": "book.book",
+    "fields": {
+      "title": "In a Sunburned Country",
+      "description": "-",
+      "authors": "Bill Bryson",
+      "isbn": "0767903862",
+      "num_pages": 335,
+      "publisher": "Broadway Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 17,
+    "model": "book.book",
+    "fields": {
+      "title": "I'm a Stranger Here Myself: Notes on Returning to America After Twenty Years Away",
+      "description": "-",
+      "authors": "Bill Bryson",
+      "isbn": "076790382X",
+      "num_pages": 304,
+      "publisher": "Broadway Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 18,
+    "model": "book.book",
+    "fields": {
+      "title": "The Lost Continent: Travels in Small Town America",
+      "description": "-",
+      "authors": "Bill Bryson",
+      "isbn": "0060920084",
+      "num_pages": 299,
+      "publisher": "William Morrow Paperbacks",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 19,
+    "model": "book.book",
+    "fields": {
+      "title": "Neither Here nor There: Travels in Europe",
+      "description": "-",
+      "authors": "Bill Bryson",
+      "isbn": "0380713802",
+      "num_pages": 254,
+      "publisher": "William Morrow Paperbacks",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 20,
+    "model": "book.book",
+    "fields": {
+      "title": "Notes from a Small Island",
+      "description": "-",
+      "authors": "Bill Bryson",
+      "isbn": "0380727501",
+      "num_pages": 324,
+      "publisher": "William Morrow Paperbacks",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 21,
+    "model": "book.book",
+    "fields": {
+      "title": "The Mother Tongue: English and How It Got That Way",
+      "description": "-",
+      "authors": "Bill Bryson",
+      "isbn": "0380715430",
+      "num_pages": 270,
+      "publisher": "William Morrow Paperbacks",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 22,
+    "model": "book.book",
+    "fields": {
+      "title": "J.R.R. Tolkien 4-Book Boxed Set: The Hobbit and The Lord of the Rings",
+      "description": "-",
+      "authors": "J.R.R. Tolkien",
+      "isbn": "0345538374",
+      "num_pages": 1728,
+      "publisher": "Ballantine Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 23,
+    "model": "book.book",
+    "fields": {
+      "title": "The Lord of the Rings (The Lord of the Rings  #1-3)",
+      "description": "-",
+      "authors": "J.R.R. Tolkien",
+      "isbn": "0618517650",
+      "num_pages": 1184,
+      "publisher": "Houghton Mifflin Harcourt",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 24,
+    "model": "book.book",
+    "fields": {
+      "title": "The Fellowship of the Ring (The Lord of the Rings  #1)",
+      "description": "-",
+      "authors": "J.R.R. Tolkien",
+      "isbn": "0618346252",
+      "num_pages": 398,
+      "publisher": "Houghton Mifflin Harcourt",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 25,
+    "model": "book.book",
+    "fields": {
+      "title": "The Lord of the Rings (The Lord of the Rings  #1-3)",
+      "description": "-",
+      "authors": "J.R.R. Tolkien/Alan  Lee",
+      "isbn": "0618260587",
+      "num_pages": 1216,
+      "publisher": "Houghton Mifflin Harcourt",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 26,
+    "model": "book.book",
+    "fields": {
+      "title": "The Lord of the Rings: Weapons and Warfare",
+      "description": "-",
+      "authors": "Chris   Smith/Christopher  Lee/Richard Taylor",
+      "isbn": "0618391002",
+      "num_pages": 218,
+      "publisher": "Houghton Mifflin Harcourt",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 27,
+    "model": "book.book",
+    "fields": {
+      "title": "The Lord of the Rings: Complete Visual Companion",
+      "description": "-",
+      "authors": "Jude Fisher",
+      "isbn": "0618510826",
+      "num_pages": 224,
+      "publisher": "Houghton Mifflin Harcourt",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 28,
+    "model": "book.book",
+    "fields": {
+      "title": "Agile Web Development with Rails: A Pragmatic Guide",
+      "description": "-",
+      "authors": "Dave Thomas/David Heinemeier Hansson/Leon Breedt/Mike Clark/Thomas  Fuchs/Andreas  Schwarz",
+      "isbn": "097669400X",
+      "num_pages": 558,
+      "publisher": "Pragmatic Bookshelf",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 29,
+    "model": "book.book",
+    "fields": {
+      "title": "Hatchet (Brian's Saga  #1)",
+      "description": "-",
+      "authors": "Gary Paulsen",
+      "isbn": "0689840926",
+      "num_pages": 208,
+      "publisher": "Atheneum Books for Young Readers: Richard Jackson Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 30,
+    "model": "book.book",
+    "fields": {
+      "title": "Hatchet: A Guide for Using \"Hatchet\" in the Classroom",
+      "description": "-",
+      "authors": "Donna Ickes/Edward Sciranko/Keith Vasconcelles",
+      "isbn": 1557344493,
+      "num_pages": 48,
+      "publisher": "Teacher Created Resources",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 31,
+    "model": "book.book",
+    "fields": {
+      "title": "Guts: The True Stories behind Hatchet and the Brian Books",
+      "description": "-",
+      "authors": "Gary Paulsen",
+      "isbn": "0385326505",
+      "num_pages": 144,
+      "publisher": "Delacorte Press",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 32,
+    "model": "book.book",
+    "fields": {
+      "title": "Molly Hatchet - 5 of the Best",
+      "description": "-",
+      "authors": "Molly Hatchet",
+      "isbn": 1575606240,
+      "num_pages": 56,
+      "publisher": "Cherry Lane Music Company",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 33,
+    "model": "book.book",
+    "fields": {
+      "title": "Hatchet Jobs: Writings on Contemporary Fiction",
+      "description": "-",
+      "authors": "Dale Peck",
+      "isbn": 1595580271,
+      "num_pages": 228,
+      "publisher": "The New Press",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 34,
+    "model": "book.book",
+    "fields": {
+      "title": "A Changeling for All Seasons (Changeling Seasons #1)",
+      "description": "-",
+      "authors": "Angela Knight/Sahara Kelly/Judy Mays/Marteeka Karland/Kate Douglas/Shelby Morgen/Lacey Savage/Kate Hill/Willa Okati",
+      "isbn": 1595962808,
+      "num_pages": 304,
+      "publisher": "Changeling Press",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 35,
+    "model": "book.book",
+    "fields": {
+      "title": "Changeling (Changeling  #1)",
+      "description": "-",
+      "authors": "Delia Sherman",
+      "isbn": "0670059676",
+      "num_pages": 256,
+      "publisher": "Viking Juvenile",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 36,
+    "model": "book.book",
+    "fields": {
+      "title": "The Changeling Sea",
+      "description": "-",
+      "authors": "Patricia A. McKillip",
+      "isbn": "0141312629",
+      "num_pages": 137,
+      "publisher": "Firebird",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 37,
+    "model": "book.book",
+    "fields": {
+      "title": "The Changeling",
+      "description": "-",
+      "authors": "Zilpha Keatley Snyder",
+      "isbn": "0595321801",
+      "num_pages": 228,
+      "publisher": "iUniverse",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 38,
+    "model": "book.book",
+    "fields": {
+      "title": "The Changeling",
+      "description": "-",
+      "authors": "Kate Horsley",
+      "isbn": 1590301943,
+      "num_pages": 339,
+      "publisher": "Shambhala",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 39,
+    "model": "book.book",
+    "fields": {
+      "title": "The Changeling (Daughters of England  #15)",
+      "description": "-",
+      "authors": "Philippa Carr",
+      "isbn": "0449146979",
+      "num_pages": 369,
+      "publisher": "Ivy Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 40,
+    "model": "book.book",
+    "fields": {
+      "title": "The Known World",
+      "description": "-",
+      "authors": "Edward P. Jones",
+      "isbn": "0061159174",
+      "num_pages": 388,
+      "publisher": "Amistad",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 41,
+    "model": "book.book",
+    "fields": {
+      "title": "The Known World",
+      "description": "-",
+      "authors": "Edward P. Jones/Kevin R. Free",
+      "isbn": "006076273X",
+      "num_pages": 14,
+      "publisher": "HarperAudio",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 42,
+    "model": "book.book",
+    "fields": {
+      "title": "The Known World",
+      "description": "-",
+      "authors": "Edward P. Jones",
+      "isbn": "0060749911",
+      "num_pages": 576,
+      "publisher": "Harper",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 43,
+    "model": "book.book",
+    "fields": {
+      "title": "Traders  Guns & Money: Knowns and Unknowns in the Dazzling World of Derivatives",
+      "description": "-",
+      "authors": "Satyajit Das",
+      "isbn": "0273704745",
+      "num_pages": 334,
+      "publisher": "FT Press",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 44,
+    "model": "book.book",
+    "fields": {
+      "title": "Artesia: Adventures in the Known World",
+      "description": "-",
+      "authors": "Mark Smylie",
+      "isbn": 1932386106,
+      "num_pages": 352,
+      "publisher": "Archaia",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 45,
+    "model": "book.book",
+    "fields": {
+      "title": "The John McPhee Reader (John McPhee Reader  #1)",
+      "description": "-",
+      "authors": "John McPhee/William Howarth",
+      "isbn": "0374517193",
+      "num_pages": 416,
+      "publisher": "Farrar  Straus and Giroux",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 46,
+    "model": "book.book",
+    "fields": {
+      "title": "Uncommon Carriers",
+      "description": "-",
+      "authors": "John McPhee",
+      "isbn": "0374280398",
+      "num_pages": 248,
+      "publisher": "Farrar Straus Giroux",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 47,
+    "model": "book.book",
+    "fields": {
+      "title": "Heirs of General Practice",
+      "description": "-",
+      "authors": "John McPhee",
+      "isbn": "0374519749",
+      "num_pages": 128,
+      "publisher": "Farrar  Straus and Giroux",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 48,
+    "model": "book.book",
+    "fields": {
+      "title": "The Control of Nature",
+      "description": "-",
+      "authors": "John McPhee",
+      "isbn": "0374522596",
+      "num_pages": 288,
+      "publisher": "Farrar  Straus and Giroux",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 49,
+    "model": "book.book",
+    "fields": {
+      "title": "Annals of the Former World",
+      "description": "-",
+      "authors": "John McPhee",
+      "isbn": "0374518734",
+      "num_pages": 720,
+      "publisher": "Farrar  Straus and Giroux",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 50,
+    "model": "book.book",
+    "fields": {
+      "title": "Coming Into the Country",
+      "description": "-",
+      "authors": "John McPhee",
+      "isbn": "0374522871",
+      "num_pages": 448,
+      "publisher": "Farrar  Straus and Giroux",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 51,
+    "model": "book.book",
+    "fields": {
+      "title": "La Place de la Concorde Suisse",
+      "description": "-",
+      "authors": "John McPhee",
+      "isbn": "0374519323",
+      "num_pages": 160,
+      "publisher": "Farrar  Straus and Giroux",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 52,
+    "model": "book.book",
+    "fields": {
+      "title": "Giving Good Weight",
+      "description": "-",
+      "authors": "John McPhee",
+      "isbn": "0374516006",
+      "num_pages": 288,
+      "publisher": "Farrar  Straus and Giroux",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 53,
+    "model": "book.book",
+    "fields": {
+      "title": "Rising from the Plains",
+      "description": "-",
+      "authors": "John McPhee",
+      "isbn": "0374520658",
+      "num_pages": 208,
+      "publisher": "Farrar  Straus and Giroux",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 54,
+    "model": "book.book",
+    "fields": {
+      "title": "The Heidi Chronicles",
+      "description": "-",
+      "authors": "Wendy Wasserstein",
+      "isbn": "0822205106",
+      "num_pages": 81,
+      "publisher": "Dramatists Play Service",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 55,
+    "model": "book.book",
+    "fields": {
+      "title": "The Heidi Chronicles: Uncommon Women and Others & Isn't It Romantic",
+      "description": "-",
+      "authors": "Wendy Wasserstein",
+      "isbn": "0679734996",
+      "num_pages": 249,
+      "publisher": "Vintage",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 56,
+    "model": "book.book",
+    "fields": {
+      "title": "Active Literacy Across the Curriculum: Strategies for Reading  Writing  Speaking  and Listening",
+      "description": "-",
+      "authors": "Heidi Hayes Jacobs",
+      "isbn": 1596670231,
+      "num_pages": 138,
+      "publisher": "Routledge",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 57,
+    "model": "book.book",
+    "fields": {
+      "title": "Simply Beautiful Beaded Jewelry",
+      "description": "-",
+      "authors": "Heidi Boyd",
+      "isbn": 1581807740,
+      "num_pages": 128,
+      "publisher": "North Light Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 58,
+    "model": "book.book",
+    "fields": {
+      "title": "Always Enough: God's Miraculous Provision Among the Poorest Children on Earth",
+      "description": "-",
+      "authors": "Heidi Baker/Rolland Baker",
+      "isbn": "0800793617",
+      "num_pages": 192,
+      "publisher": "Chosen Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 59,
+    "model": "book.book",
+    "fields": {
+      "title": "Mapping the Big Picture: Integrating Curriculum & Assessment K-12",
+      "description": "-",
+      "authors": "Heidi Hayes Jacobs",
+      "isbn": "0871202867",
+      "num_pages": 108,
+      "publisher": "Association for Supervision & Curriculum Development",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 60,
+    "model": "book.book",
+    "fields": {
+      "title": "Heidi (Heidi  #1-2)",
+      "description": "-",
+      "authors": "Johanna Spyri/Beverly Cleary/Angelo  Rinaldi",
+      "isbn": "0753454947",
+      "num_pages": 352,
+      "publisher": "Kingfisher",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 61,
+    "model": "book.book",
+    "fields": {
+      "title": "Getting Results with Curriculum Mapping",
+      "description": "-",
+      "authors": "Heidi Hayes Jacobs",
+      "isbn": "0871209993",
+      "num_pages": 192,
+      "publisher": "ASCD",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 62,
+    "model": "book.book",
+    "fields": {
+      "title": "There's Always Enough: The Miraculous Move of God in Mozambique",
+      "description": "-",
+      "authors": "Rolland Baker/Heidi Baker",
+      "isbn": 1852402873,
+      "num_pages": 192,
+      "publisher": "Sovereign World",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 63,
+    "model": "book.book",
+    "fields": {
+      "title": "What to Expect the First Year (What to Expect)",
+      "description": "-",
+      "authors": "Heidi Murkoff/Sharon Mazel/Arlene Eisenberg/Sandee Hathaway/Mark D. Widome",
+      "isbn": "0761129588",
+      "num_pages": 832,
+      "publisher": "Workman Publishing Company",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 64,
+    "model": "book.book",
+    "fields": {
+      "title": "The Player's Handbook: The Ultimate Guide on Dating and Relationships",
+      "description": "-",
+      "authors": "Heidi Fleiss/Libby Keatinge",
+      "isbn": "0972016414",
+      "num_pages": 123,
+      "publisher": "One Hour Entertainment",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 65,
+    "model": "book.book",
+    "fields": {
+      "title": "Simply Beautiful Beading: 53 Quick and Easy Projects",
+      "description": "-",
+      "authors": "Heidi Boyd",
+      "isbn": 1581805632,
+      "num_pages": 128,
+      "publisher": "North Light Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 66,
+    "model": "book.book",
+    "fields": {
+      "title": "God Emperor of Dune (Dune Chronicles  #4)",
+      "description": "-",
+      "authors": "Frank Herbert",
+      "isbn": "0441294677",
+      "num_pages": 423,
+      "publisher": "Ace Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 67,
+    "model": "book.book",
+    "fields": {
+      "title": "Chapterhouse: Dune (Dune Chronicles #6)",
+      "description": "-",
+      "authors": "Frank Herbert",
+      "isbn": "0441102670",
+      "num_pages": 436,
+      "publisher": "Ace Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 68,
+    "model": "book.book",
+    "fields": {
+      "title": "Dune Messiah (Dune Chronicles #2)",
+      "description": "-",
+      "authors": "Frank Herbert",
+      "isbn": "0441172695",
+      "num_pages": 331,
+      "publisher": "Ace Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 69,
+    "model": "book.book",
+    "fields": {
+      "title": "Dreamer of Dune: The Biography of Frank Herbert",
+      "description": "-",
+      "authors": "Brian Herbert",
+      "isbn": "0765306476",
+      "num_pages": 592,
+      "publisher": "Tor Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 70,
+    "model": "book.book",
+    "fields": {
+      "title": "Heretics of Dune (Dune Chronicles  #5)",
+      "description": "-",
+      "authors": "Frank Herbert",
+      "isbn": "0399128980",
+      "num_pages": 480,
+      "publisher": "Putnam",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 71,
+    "model": "book.book",
+    "fields": {
+      "title": "The Road to Dune",
+      "description": "-",
+      "authors": "Frank Herbert/Brian Herbert/Kevin J. Anderson",
+      "isbn": "0765353709",
+      "num_pages": 426,
+      "publisher": "Tor Science Fiction",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 72,
+    "model": "book.book",
+    "fields": {
+      "title": "Heretics of Dune (Dune Chronicles #5)",
+      "description": "-",
+      "authors": "Frank Herbert",
+      "isbn": "0441328008",
+      "num_pages": 471,
+      "publisher": "Ace Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 73,
+    "model": "book.book",
+    "fields": {
+      "title": "The Lord of the Rings: The Art of the Fellowship of the Ring",
+      "description": "-",
+      "authors": "Gary Russell",
+      "isbn": "0618212906",
+      "num_pages": 192,
+      "publisher": "Houghton Mifflin Harcourt",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 74,
+    "model": "book.book",
+    "fields": {
+      "title": "The Power of One (The Power of One  #1)",
+      "description": "-",
+      "authors": "Bryce Courtenay",
+      "isbn": "034541005X",
+      "num_pages": 544,
+      "publisher": "Ballantine Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 75,
+    "model": "book.book",
+    "fields": {
+      "title": "The Power of One (The Power of One  #1)",
+      "description": "-",
+      "authors": "Bryce Courtenay",
+      "isbn": "0385732546",
+      "num_pages": 291,
+      "publisher": "Delacorte Books for Young Readers",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 76,
+    "model": "book.book",
+    "fields": {
+      "title": "The Power of One: One Person  One Rule  One Month",
+      "description": "-",
+      "authors": "John C. Maxwell/Stephen R. Graves/Thomas G. Addington",
+      "isbn": "0785260056",
+      "num_pages": 256,
+      "publisher": "Thomas Nelson",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 77,
+    "model": "book.book",
+    "fields": {
+      "title": "Power of an Hour: Business and Life Mastery in One Hour a Week",
+      "description": "-",
+      "authors": "Dave Lakhani",
+      "isbn": "0471780936",
+      "num_pages": 205,
+      "publisher": "Wiley",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 78,
+    "model": "book.book",
+    "fields": {
+      "title": "The Power of One: The Solo Play for Playwrights  Actors  and Directors",
+      "description": "-",
+      "authors": "Louis E. Catron",
+      "isbn": "0325001537",
+      "num_pages": 240,
+      "publisher": "Heinemann Drama",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 79,
+    "model": "book.book",
+    "fields": {
+      "title": "How to Buy  Sell & Profit on eBay: Kick-Start Your Home-Based Business in Just Thirty Days",
+      "description": "-",
+      "authors": "Adam Ginsberg",
+      "isbn": "006076287X",
+      "num_pages": 336,
+      "publisher": "William Morrow Paperbacks",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 80,
+    "model": "book.book",
+    "fields": {
+      "title": "eBay for Dummies",
+      "description": "-",
+      "authors": "Marsha Collier",
+      "isbn": "0470045299",
+      "num_pages": 386,
+      "publisher": "Wiley",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 81,
+    "model": "book.book",
+    "fields": {
+      "title": "What to Sell on ebay and Where to Get It: The Definitive Guide to Product Sourcing for eBay and Beyond",
+      "description": "-",
+      "authors": "Chris Malta/Lisa Suttora",
+      "isbn": "0072262788",
+      "num_pages": 260,
+      "publisher": "McGraw-Hill",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 82,
+    "model": "book.book",
+    "fields": {
+      "title": "Starting an eBay Business for Dummies",
+      "description": "-",
+      "authors": "Marsha Collier",
+      "isbn": "0764569244",
+      "num_pages": 384,
+      "publisher": "Wiley",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 83,
+    "model": "book.book",
+    "fields": {
+      "title": "eBay: Top 100 Simplified Tips & Tricks",
+      "description": "-",
+      "authors": "Julia Wilkinson",
+      "isbn": "0471933821",
+      "num_pages": 260,
+      "publisher": "Wiley",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 84,
+    "model": "book.book",
+    "fields": {
+      "title": "ebay Timesaving Techniques for Dummies",
+      "description": "-",
+      "authors": "Marsha Collier",
+      "isbn": "0764559915",
+      "num_pages": 391,
+      "publisher": "Wiley",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 85,
+    "model": "book.book",
+    "fields": {
+      "title": "eBay Business All-in-One Desk Reference for Dummies",
+      "description": "-",
+      "authors": "Marsha Collier",
+      "isbn": "0764584383",
+      "num_pages": 864,
+      "publisher": "Wiley",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 86,
+    "model": "book.book",
+    "fields": {
+      "title": "Ruby Cookbook",
+      "description": "-",
+      "authors": "Lucas Carlson/Leonard Richardson",
+      "isbn": "0596523696",
+      "num_pages": 873,
+      "publisher": "O'Reilly Media",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 87,
+    "model": "book.book",
+    "fields": {
+      "title": "Ruby Ann's Down Home Trailer Park Cookbook",
+      "description": "-",
+      "authors": "Ruby Ann Boxcar",
+      "isbn": "0806523492",
+      "num_pages": 240,
+      "publisher": "Citadel",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 88,
+    "model": "book.book",
+    "fields": {
+      "title": "Ruby Ann's Down Home Trailer Park BBQin' Cookbook",
+      "description": "-",
+      "authors": "Ruby Ann Boxcar",
+      "isbn": "0806525363",
+      "num_pages": 206,
+      "publisher": "Citadel",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 89,
+    "model": "book.book",
+    "fields": {
+      "title": "Rails Cookbook: Recipes for Rapid Web Development with Ruby",
+      "description": "-",
+      "authors": "Rob Orsini",
+      "isbn": "0596527314",
+      "num_pages": 514,
+      "publisher": "O'Reilly Media",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 90,
+    "model": "book.book",
+    "fields": {
+      "title": "Anna Karenina",
+      "description": "-",
+      "authors": "Leo Tolstoy/Richard Pevear/Larissa Volokhonsky",
+      "isbn": "0143035002",
+      "num_pages": 838,
+      "publisher": "Penguin Classics",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 91,
+    "model": "book.book",
+    "fields": {
+      "title": "Anna Karenina",
+      "description": "-",
+      "authors": "Leo Tolstoy/David Magarshack/Priscilla Meyer",
+      "isbn": "0451528611",
+      "num_pages": 960,
+      "publisher": "Signet",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 92,
+    "model": "book.book",
+    "fields": {
+      "title": "Anna Karenina",
+      "description": "-",
+      "authors": "Leo Tolstoy/Richard Pevear/Larissa Volokhonsky/John Bayley",
+      "isbn": "0140449175",
+      "num_pages": 837,
+      "publisher": "Penguin Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 93,
+    "model": "book.book",
+    "fields": {
+      "title": "CliffsNotes on Tolstoy's Anna Karenina",
+      "description": "-",
+      "authors": "Marianne Sturman/Leo Tolstoy",
+      "isbn": "0822001837",
+      "num_pages": 80,
+      "publisher": "Cliffs Notes",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 94,
+    "model": "book.book",
+    "fields": {
+      "title": "Anna Karenina",
+      "description": "-",
+      "authors": "Leo Tolstoy/Amy Mandelker/Constance Garnett",
+      "isbn": 1593080271,
+      "num_pages": 803,
+      "publisher": "Barnes & Noble Classics",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 95,
+    "model": "book.book",
+    "fields": {
+      "title": "Anna Karenina",
+      "description": "-",
+      "authors": "Leo Tolstoy/Louise Maude/Aylmer Maude",
+      "isbn": "0486437965",
+      "num_pages": 752,
+      "publisher": "Dover Publications",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 96,
+    "model": "book.book",
+    "fields": {
+      "title": "Anna Karenina",
+      "description": "-",
+      "authors": "Leo Tolstoy/Constance Garnett/Amy Mandelker",
+      "isbn": 1593081774,
+      "num_pages": 803,
+      "publisher": "Barnes & Noble",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 97,
+    "model": "book.book",
+    "fields": {
+      "title": "Dinner with Anna Karenina",
+      "description": "-",
+      "authors": "Gloria Goldreich",
+      "isbn": "0778322270",
+      "num_pages": 360,
+      "publisher": "Mira Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 98,
+    "model": "book.book",
+    "fields": {
+      "title": "Tolstoy: Anna Karenina",
+      "description": "-",
+      "authors": "Anthony Thorlby",
+      "isbn": "0521313252",
+      "num_pages": 128,
+      "publisher": "Cambridge University Press",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 99,
+    "model": "book.book",
+    "fields": {
+      "title": "Untouchable",
+      "description": "-",
+      "authors": "Mulk Raj Anand/E.M. Forster",
+      "isbn": "0140183957",
+      "num_pages": 160,
+      "publisher": "Penguin Books",
+      "rating_count": 0,
+      "rating": 0
+    }
+  },
+  {
+    "pk": 100,
+    "model": "book.book",
+    "fields": {
+      "title": "The Untouchable",
+      "description": "-",
+      "authors": "John Banville",
+      "isbn": "0679767479",
+      "num_pages": 367,
+      "publisher": "Vintage",
+      "rating_count": 0,
+      "rating": 0
+    }
+  }
+]
