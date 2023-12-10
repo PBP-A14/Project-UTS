@@ -59,8 +59,7 @@ def login_mobile(request):
             return JsonResponse({
                 "username": user.username,
                 "status": True,
-                "message": "Login sukses!",
-                "isStaff": user.is_staff,
+                "message": "Sign in success!"
                 # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
             }, status=200)
         else:
@@ -72,7 +71,7 @@ def login_mobile(request):
     else:
         return JsonResponse({
             "status": False,
-            "message": "Login gagal, periksa kembali email atau kata sandi."
+            "message": "Incorrect username or password."
         }, status=401)
     
 # @csrf_exempt

@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from my_profile.models import ReadingHistory, UserProfile
-from home.models import Book
+from book.models import Book
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 

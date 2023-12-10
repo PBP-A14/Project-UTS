@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from home.models import Book
+from book.models import Book
 from admin_app.models import Log
 from django.db.models import Q
 from datetime import datetime
@@ -160,7 +160,7 @@ def create_book_flutter(request):
             description=data["description"], 
             authors=data["authors"], 
             isbn=data["isbn"], 
-            num_pages=data["numPages"], 
+            num_pages=int(data["numPages"]), 
             publisher=data["publisher"],
             rating_count=0, 
             rating=0.0
