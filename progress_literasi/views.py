@@ -1,8 +1,9 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import BukuDibaca
+from .models import BukuDibaca, TargetHarian
 from .forms import DailyTargetForm
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from my_profile.models import ReadingHistory, UserProfile
@@ -10,6 +11,7 @@ from book.models import Book
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 import json
 
 @login_required
@@ -43,15 +45,8 @@ def progress(request):
         user_profile = None
         target_buku = 0
 
-    # reading_history, created = ReadingHistory.objects.get_or_create(user=user)   
-    # book_count = reading_history.books.count()
-    # selisih = target_buku - book_count
-
     context = {
         'target_buku': target_buku,
-        # 'progress': user_profile.progress,
-        # 'book_count': book_count,
-        # 'selisih': selisih,
     }
 
     return render(request, 'progress.html', context)
@@ -135,11 +130,33 @@ def read_book(request, book_id):
     user = get_object_or_404(User, pk=request.user.id)
     book = get_object_or_404(Book, pk=book_id)
     buku_dibaca, created = BukuDibaca.objects.get_or_create(user=user, buku=book)
+    if created:
+        print(f'BukuDibaca created for user {user} and book {book}')
+    else:
+        print(f'BukuDibaca already exists for user {user} and book {book}')
     reading_history, created = ReadingHistory.objects.get_or_create(user=user)
     reading_history.books.add(buku_dibaca)
     reading_history.save()
 
     return redirect('home:home')
+
+@csrf_exempt
+@login_required
+def set_target_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+
+        new_target = TargetHarian.objects.create(
+           user = request.user,
+           target_buku = data['target_buku'], 
+        )
+
+        new_target.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
 
 @csrf_exempt
 def read_book_mobile(request):
@@ -155,3 +172,8 @@ def read_book_mobile(request):
     reading_history.save()
 
     return JsonResponse({'message':'Berhasil membaca buku'})
+
+@login_required
+def show_json(request):
+    data = TargetHarian.objects.filter(user=request.user)
+    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
