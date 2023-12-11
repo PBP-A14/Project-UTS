@@ -27,7 +27,10 @@ def user_profile(request):
     book_count = reading_history.books.count()
     
     if target_buku > 0:
-        percentage_complete = (book_count * 100) / target_buku
+        if book_count >= target_buku:
+            percentage_complete = 100
+        else:
+            percentage_complete = (book_count * 100) / target_buku
     else:
         percentage_complete = 0
 
@@ -52,6 +55,16 @@ def get_reading_history_json(request):
     book_list = [buku_dibaca.buku for buku_dibaca in buku_dibaca_list]
 
     return HttpResponse(serializers.serialize('json', book_list))
+
+@login_required
+def get_reading_history(request):
+    user = request.user
+    reading_history = ReadingHistory.objects.get(user=user)
+    
+    # Ambil semua objek BukuDibaca yang terkait dengan objek ReadingHistory
+    buku_dibaca_list = reading_history.books.all()
+    
+    return HttpResponse(serializers.serialize('json', buku_dibaca_list), content_type="application/json")
 
 @login_required
 def change_password(request):

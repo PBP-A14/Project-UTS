@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
+import json
 
 @login_required
 def set_target(request):
@@ -156,6 +157,21 @@ def set_target_flutter(request):
         return JsonResponse({"status": "success"}, status=200)
     else:
         return JsonResponse({"status": "error"}, status=401)
+
+@csrf_exempt
+def read_book_mobile(request):
+    data = json.loads(request.body)
+    user_id = data['user_id']
+    book_id = data['book_id']
+    user = get_object_or_404(User, pk=user_id)
+    book = get_object_or_404(Book, pk=book_id)
+    buku_dibaca, created = BukuDibaca.objects.get_or_create(user=user, buku=book)
+    reading_history, created = ReadingHistory.objects.get_or_create(user=user)
+
+    reading_history.books.add(buku_dibaca)
+    reading_history.save()
+
+    return JsonResponse({'message':'Berhasil membaca buku'})
 
 @login_required
 def show_json(request):
