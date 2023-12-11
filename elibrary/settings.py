@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'authentication',
     'my_profile',
     'admin_app',
-    'progress_literasi'
+    'progress_literasi',
+    'detail_buku'
 ]
 
 MIDDLEWARE = [

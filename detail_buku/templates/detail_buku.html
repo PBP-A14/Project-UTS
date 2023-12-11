@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+  }
+
+  .book-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1; /* Ensure book-container is above the navbar */
+  }
+
+  .book-details {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .book-cover {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+  }
+
+  .book-info {
+    flex: 1;
+    margin-left: 20px;
+    color: #333;
+  }
+
+  .like-btn,
+  .submit-btn {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 12px;
+    margin-top: 10px;
+  }
+
+  .reviews-container {
+    margin-top: 20px;
+  }
+
+  .review {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+
+  .add-review-form {
+    margin-top: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 10px;
+  }
+
+  .review-textarea {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  /* Add a margin-top to account for the navbar height */
+  @media screen and (min-width: 768px) {
+    .book-container {
+      margin-top: 60px; /* Adjust the value based on your navbar height */
+    }
+  }
+</style>
+
+<body>
+  <div class="book-container">
+    <div class="book-details">
+      <img src="https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg" alt="{{ book.title }}" class="book-cover">
+      <div class="book-info">
+        <h2>{{ book.title }}</h2>
+        <p>{{ book.description }}</p>
+        <p><strong>Authors:</strong> {{ book.authors }}</p>
+        <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+        <p><strong>Number of Pages:</strong> {{ book.num_pages }}</p>
+        <p><strong>Publisher:</strong> {{ book.publisher }}</p>
+        <p><strong>Rating:</strong> {{ book.rating }}</p>
+        <p><strong>Views:</strong> {{ views_count }}</p>
+        <p><strong>Likes:</strong> {{ likes_count }}</p>
+        <button id="like-btn" class="like-btn">Like</button>
+      </div>
+    </div>
+    <div id="reviews" class="reviews-container">
+      {% for review in reviews %}
+        <div class="review">
+          <p>{{ review.user.username }}: {{ review.review }}</p>
+        </div>
+      {% endfor %}
+    </div>
+    <form id="add-review-form" class="add-review-form">
+      <div class="form-group">
+        <label for="review">Add a review:</label>
+        <textarea id="review" rows="3" class="review-textarea"></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Submit</button>
+    </form>
+  </div>
+</body>
+
+<script src="{% static 'detail_buku/book_detail.js' %}">
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('like-btn').addEventListener('click', function() {
+    fetch('/like_book/', {
+      method: 'POST',
+      body: JSON.stringify({'book_id': '{{ book.id }}'}),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      }
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      if (data.result == 'liked') {
+        document.getElementById('like-btn').style.backgroundColor = '#28a745';
+      } else {
+        document.getElementById('like-btn').style.backgroundColor = '#007BFF';
+      }
+    });
+  });
+
+  document.getElementById('add-review-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    fetch('/add_review/', {
+      method: 'POST',
+      body: JSON.stringify({'book_id': '{{ book.id }}', 'review': document.getElementById('review').value}),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}'
+      }
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      if (data.result == 'review added') {
+        var newReview = document.createElement('div');
+        newReview.className = 'review';
+        newReview.style.border = '1px solid #ddd';
+        newReview.style.padding = '10px';
+        newReview.style.marginBottom = '10px';
+        newReview.innerHTML = '<p>{{ request.user.username }}: ' + document.getElementById('review').value + '</p>';
+        document.getElementById('reviews').appendChild(newReview);
+        document.getElementById('review').value = '';
+      }
+    });
+  });
+});
+</script>
+{% endblock content %}

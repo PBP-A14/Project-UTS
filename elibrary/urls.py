@@ -24,4 +24,5 @@ urlpatterns = [
     path('my_profile', include ('my_profile.urls')),
     path('admin_app/', include('admin_app.urls')),
     path('progress_literasi/', include('progress_literasi.urls')),
+    path('detail_buku/', include('detail_buku.urls')),
 ]
