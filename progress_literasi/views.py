@@ -129,6 +129,10 @@ def read_book(request, book_id):
     user = get_object_or_404(User, pk=request.user.id)
     book = get_object_or_404(Book, pk=book_id)
     buku_dibaca, created = BukuDibaca.objects.get_or_create(user=user, buku=book)
+    if created:
+        print(f'BukuDibaca created for user {user} and book {book}')
+    else:
+        print(f'BukuDibaca already exists for user {user} and book {book}')
     reading_history, created = ReadingHistory.objects.get_or_create(user=user)
     reading_history.books.add(buku_dibaca)
     reading_history.save()
