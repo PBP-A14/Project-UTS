@@ -149,3 +149,25 @@ def update_cookie(request):
         return response
     
     return JsonResponse({'message': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def create_book_flutter(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        new_book = Book.objects.create(
+            title=data["title"], 
+            description=data["description"], 
+            authors=data["authors"], 
+            isbn=data["isbn"], 
+            num_pages=int(data["numPages"]), 
+            publisher=data["publisher"],
+            rating_count=0, 
+            rating=0.0
+        )
+
+        new_book.save()
+        
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
