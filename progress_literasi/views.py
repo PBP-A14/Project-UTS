@@ -9,6 +9,8 @@ from my_profile.models import ReadingHistory, UserProfile
 from book.models import Book
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 @login_required
 def set_target(request):
@@ -138,3 +140,18 @@ def read_book(request, book_id):
     reading_history.save()
 
     return redirect('home:home')
+
+@csrf_exempt
+def read_book_mobile(request):
+    data = json.loads(request.body)
+    user_id = data['user_id']
+    book_id = data['book_id']
+    user = get_object_or_404(User, pk=user_id)
+    book = get_object_or_404(Book, pk=book_id)
+    buku_dibaca, created = BukuDibaca.objects.get_or_create(user=user, buku=book)
+    reading_history, created = ReadingHistory.objects.get_or_create(user=user)
+
+    reading_history.books.add(buku_dibaca)
+    reading_history.save()
+
+    return JsonResponse({'message':'Berhasil membaca buku'})

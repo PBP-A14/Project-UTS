@@ -59,6 +59,7 @@ def login_mobile(request):
             # Status login sukses.
             return JsonResponse({
                 "username": user.username,
+                "user_id":user.pk,
                 "status": True,
                 "message": "Sign in success!"
                 # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
