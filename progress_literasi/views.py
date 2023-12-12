@@ -170,5 +170,5 @@ def set_target_flutter(request):
 
 @login_required
 def show_json(request):
-    data = TargetHarian.objects.filter(user=request.user)
+    data = UserProfile.objects.filter(user=request.user)
     return HttpResponse(serializers.serialize("json", data), content_type="application/json")
