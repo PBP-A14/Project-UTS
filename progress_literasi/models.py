@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from home.models import Book
+from book.models import Book
     
 class ProgressBaca(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
