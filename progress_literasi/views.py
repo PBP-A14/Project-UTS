@@ -151,24 +151,34 @@ def read_book_mobile(request):
     return JsonResponse({'message':'Berhasil membaca buku'})
 
 @csrf_exempt
-@login_required
 def set_target_flutter(request):
     if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            target_buku = data.get('Target Buku')  # Adjust the key if needed
 
-        data = json.loads(request.body)
+            if target_buku is not None:
+                new_target = TargetHarian.objects.create(
+                    user=request.user,
+                    target_buku=target_buku,
+                )
+                new_target.save()
 
-        new_target = TargetHarian.objects.create(
-           user = request.user,
-           target_buku = data['target_buku'], 
-        )
+                return JsonResponse({"status": "success"}, status=200)
+            else:
+                return JsonResponse({"status": "error", "message": "Invalid or missing 'Target Buku' key"}, status=400)
 
-        new_target.save()
+        except json.JSONDecodeError as e:
+            return JsonResponse({"status": "error", "message": "Invalid JSON data"}, status=400)
 
-        return JsonResponse({"status": "success"}, status=200)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
     else:
-        return JsonResponse({"status": "error"}, status=401)
+        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
 
-@login_required
+@csrf_exempt
 def show_json(request):
-    data = UserProfile.objects.filter(user=request.user)
-    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    data = UserProfile.objects.filter(user=request.user.id)
+    serialized_data = serializers.serialize("json", data)
+    return HttpResponse(serialized_data, content_type="application/json")
