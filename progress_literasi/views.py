@@ -5,7 +5,7 @@ from .forms import DailyTargetForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from my_profile.models import ReadingHistory, UserProfile
 from book.models import Book
 from django.contrib.auth.models import User
@@ -13,6 +13,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.core import serializers
 import json
+from django.core import serializers
 
 @login_required
 def set_target(request):
@@ -172,6 +173,24 @@ def read_book_mobile(request):
     reading_history.save()
 
     return JsonResponse({'message':'Berhasil membaca buku'})
+
+@csrf_exempt
+@login_required
+def set_target_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+
+        new_target = TargetHarian.objects.create(
+           user = request.user,
+           target_buku = data['target_buku'], 
+        )
+
+        new_target.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
 
 @login_required
 def show_json(request):
