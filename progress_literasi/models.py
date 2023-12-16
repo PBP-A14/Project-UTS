@@ -5,7 +5,6 @@ from book.models import Book
 class ProgressBaca(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     buku = models.ForeignKey(Book, on_delete=models.CASCADE)
-    tanggal = models.DateField()
     buku_selesai = models.BooleanField(default=False)
 
 class TargetHarian(models.Model):

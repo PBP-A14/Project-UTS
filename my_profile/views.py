@@ -46,15 +46,15 @@ def user_profile(request):
 @login_required
 def get_reading_history_json(request):
     user = request.user
-    reading_history = ReadingHistory.objects.get(user=user)
-    
-    # Ambil semua objek BukuDibaca yang terkait dengan objek ReadingHistory
-    buku_dibaca_list = reading_history.books.all()
-
-    # Ambil objek Book yang terkait dengan setiap objek BukuDibaca
-    book_list = [buku_dibaca.buku for buku_dibaca in buku_dibaca_list]
-
-    return HttpResponse(serializers.serialize('json', book_list))
+    try:
+        reading_history = ReadingHistory.objects.get(user=user)
+        # Ambil semua objek BukuDibaca yang terkait dengan objek ReadingHistory
+        buku_dibaca_list = reading_history.books.all()
+        # Ambil objek Book yang terkait dengan setiap objek BukuDibaca
+        book_list = [buku_dibaca.buku for buku_dibaca in buku_dibaca_list]
+        return HttpResponse(serializers.serialize('json', book_list))
+    except ReadingHistory.DoesNotExist:
+        return HttpResponse('{"error": "There is no book yet!"}', status=404, content_type='application/json')
 
 @login_required
 def get_reading_history(request):
