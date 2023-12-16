@@ -142,24 +142,6 @@ def read_book(request, book_id):
     return redirect('home:home')
 
 @csrf_exempt
-@login_required
-def set_target_flutter(request):
-    if request.method == 'POST':
-
-        data = json.loads(request.body)
-
-        new_target = TargetHarian.objects.create(
-           user = request.user,
-           target_buku = data['target_buku'], 
-        )
-
-        new_target.save()
-
-        return JsonResponse({"status": "success"}, status=200)
-    else:
-        return JsonResponse({"status": "error"}, status=401)
-
-@csrf_exempt
 def read_book_mobile(request):
     data = json.loads(request.body)
     user_id = data['user_id']
