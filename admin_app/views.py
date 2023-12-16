@@ -123,13 +123,13 @@ def delete_book(request, id):
     
 @csrf_exempt
 def delete_user(request, id):
-    if request.method == 'DELETE':
+    if request.method == 'DELETE' or request.method == 'POST':
         user = get_object_or_404(User, pk=id)
         log_desc = 'Deleted username: ' + user.username
         user.delete()
         new_log = Log(staff=request.user, category='Delete user', description=log_desc)
         new_log.save()
-        return JsonResponse({'message': 'User deleted successfully'})
+        return JsonResponse({"status": "success"}, status=200)
 
 @csrf_exempt    
 def delete_cookie(request):

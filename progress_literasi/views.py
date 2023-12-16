@@ -1,8 +1,9 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import BukuDibaca, TargetHarian
 from .forms import DailyTargetForm
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from my_profile.models import ReadingHistory, UserProfile
@@ -10,6 +11,7 @@ from book.models import Book
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 import json
 from django.core import serializers
 
@@ -129,11 +131,33 @@ def read_book(request, book_id):
     user = get_object_or_404(User, pk=request.user.id)
     book = get_object_or_404(Book, pk=book_id)
     buku_dibaca, created = BukuDibaca.objects.get_or_create(user=user, buku=book)
+    if created:
+        print(f'BukuDibaca created for user {user} and book {book}')
+    else:
+        print(f'BukuDibaca already exists for user {user} and book {book}')
     reading_history, created = ReadingHistory.objects.get_or_create(user=user)
     reading_history.books.add(buku_dibaca)
     reading_history.save()
 
     return redirect('home:home')
+
+@csrf_exempt
+@login_required
+def set_target_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+
+        new_target = TargetHarian.objects.create(
+           user = request.user,
+           target_buku = data['target_buku'], 
+        )
+
+        new_target.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
 
 @csrf_exempt
 def read_book_mobile(request):
