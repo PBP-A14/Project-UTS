@@ -56,6 +56,7 @@ def login_mobile(request):
     if user is not None:
         if user.is_active:
             auth_login(request, user)
+            print(request.session.session_key)
             # Status login sukses.
             return JsonResponse({
                 "username": user.username,
