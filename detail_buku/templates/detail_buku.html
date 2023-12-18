@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block content %}
+
 <style>
   body {
     margin: 0;
@@ -79,85 +80,168 @@
   }
 </style>
 
-<body>
-  <div class="book-container">
-    <div class="book-details">
-      <img src="https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg" alt="{{ book.title }}" class="book-cover">
-      <div class="book-info">
-        <h2>{{ book.title }}</h2>
-        <p>{{ book.description }}</p>
-        <p><strong>Authors:</strong> {{ book.authors }}</p>
-        <p><strong>ISBN:</strong> {{ book.isbn }}</p>
-        <p><strong>Number of Pages:</strong> {{ book.num_pages }}</p>
-        <p><strong>Publisher:</strong> {{ book.publisher }}</p>
-        <p><strong>Rating:</strong> {{ book.rating }}</p>
-        <p><strong>Views:</strong> {{ views_count }}</p>
-        <p><strong>Likes:</strong> {{ likes_count }}</p>
-        <button id="like-btn" class="like-btn">Like</button>
-      </div>
+<div class="book-container">
+  <div class="book-details">
+    <img src="https://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg" alt="Cover of the book {{ book.title }}" class="book-cover">
+    <div class="book-info">
+      <h2>{{ book.title }}</h2>
+      <p>{{ book.description }}</p>
+      <p><strong>Authors:</strong> {{ book.authors }}</p>
+      <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+      <p><strong>Number of Pages:</strong> {{ book.num_pages }}</p>
+      <p><strong>Publisher:</strong> {{ book.publisher }}</p>
+      <p><strong>Rating:</strong> {{ book.rating|default:0|floatformat:1 }}</p>
+      <p><strong>Views:</strong> {{ views_count }}</p>
+      <p><strong>Likes:</strong> {{ likes_count }}</p>
+      <button id="like-btn" class="like-btn">Like</button>
     </div>
-    <div id="reviews" class="reviews-container">
-      {% for review in reviews %}
-        <div class="review">
-          <p>{{ review.user.username }}: {{ review.review }}</p>
-        </div>
-      {% endfor %}
-    </div>
-    <form id="add-review-form" class="add-review-form">
-      <div class="form-group">
-        <label for="review">Add a review:</label>
-        <textarea id="review" rows="3" class="review-textarea"></textarea>
-      </div>
-      <button type="submit" class="submit-btn">Submit</button>
-    </form>
   </div>
-</body>
+  <input type="hidden" id="book-id" value="{{ book_id }}">
+  <h2>Reviews</h2>
+    <table>
+        <tbody>
+            {% for review in reviews %}
+                <tr>
+                    <td>{{ review.user.username }}</td>
+                    <td>{{ review.review }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<script src="{% static 'detail_buku/book_detail.js' %}">
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('like-btn').addEventListener('click', function() {
-    fetch('/like_book/', {
-      method: 'POST',
-      body: JSON.stringify({'book_id': '{{ book.id }}'}),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}'
-      }
-    }).then(function(response) {
-      return response.json();
-    }).then(function(data) {
-      if (data.result == 'liked') {
-        document.getElementById('like-btn').style.backgroundColor = '#28a745';
-      } else {
-        document.getElementById('like-btn').style.backgroundColor = '#007BFF';
-      }
-    });
-  });
+<a href="{% url 'detail_buku:add_review' book_id %}">
+    <button>
+        Add Review
+    </button>
+</a>
 
-  document.getElementById('add-review-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    fetch('/add_review/', {
-      method: 'POST',
-      body: JSON.stringify({'book_id': '{{ book.id }}', 'review': document.getElementById('review').value}),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': '{{ csrf_token }}'
-      }
-    }).then(function(response) {
-      return response.json();
-    }).then(function(data) {
-      if (data.result == 'review added') {
-        var newReview = document.createElement('div');
-        newReview.className = 'review';
-        newReview.style.border = '1px solid #ddd';
-        newReview.style.padding = '10px';
-        newReview.style.marginBottom = '10px';
-        newReview.innerHTML = '<p>{{ request.user.username }}: ' + document.getElementById('review').value + '</p>';
-        document.getElementById('reviews').appendChild(newReview);
-        document.getElementById('review').value = '';
-      }
+<a href="{% url 'detail_buku:give_rating' book_id %}">
+  <button>
+      Give Rating
+  </button>
+</a>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var likeBtn = document.getElementById('like-btn');
+        var addReviewForm = document.getElementById('add-review-form');
+        var giveRatingBtn = document.getElementById('give-rating-form');
+
+        likeBtn.addEventListener('click', function () {
+            var bookId = document.getElementById('book-id').value;
+            fetch(`/detail_buku/book/${bookId}/like_book/`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    if (data.result == 'liked') {
+                        document.getElementById('like-btn').style.backgroundColor = '#28a745';
+                        // Increment the likes count
+                        var likesCountElement = document.querySelector('.book-info p:nth-child(9)');
+                        var likesCount = parseInt(likesCountElement.textContent.split(': ')[1]);
+                        likesCountElement.textContent = 'Likes: ' + (likesCount + 1);
+                    } else {
+                        document.getElementById('like-btn').style.backgroundColor = '#007BFF';
+                        // Decrement the likes count
+                        var likesCountElement = document.querySelector('.book-info p:nth-child(9)');
+                        var likesCount = parseInt(likesCountElement.textContent.split(': ')[1]);
+                        likesCountElement.textContent = 'Likes: ' + (likesCount - 1);
+                    }
+                });
+        });
+
+        addReviewForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            var bookId = document.getElementById('book-id').value;
+            var reviewText = document.getElementById('review').value;
+
+            // Check if the review text is empty
+            if (!reviewText.trim()) {
+                console.error('Review text is empty');
+                return;
+            }
+
+            fetch(`/detail_buku/book/${bookId}/add_review/`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    'review': reviewText,
+                    'csrfmiddlewaretoken': document.querySelector('input[name=csrfmiddlewaretoken]').value
+                }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('input[name=csrfmiddlewaretoken]').value
+                }
+            })
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    if (data.result === 'review added') {
+                        var newReview = document.createElement('div');
+                        newReview.className = 'review';
+                        newReview.style.border = '1px solid #ddd';
+                        newReview.style.padding = '10px';
+                        newReview.style.marginBottom = '10px';
+                        newReview.innerHTML = '<p>' + data.username + ': ' + reviewText + '</p>';
+                        document.getElementById('reviews').appendChild(newReview);
+                        document.getElementById('review').value = '';
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error adding review:', error);
+                });
+        });
+
+        giveRatingBtn.addEventListener('submit', function () {
+          event.preventDefault();
+          var bookId = document.getElementById('book-id').value;
+
+          // Prompt the user for a rating
+          var ratingString = prompt('Give a rating (between 1 and 5):');
+
+          // Parse the rating as a float
+          var rating = parseFloat(ratingString);
+
+          // Validate the rating
+          if (isNaN(rating) || rating < 1 || rating > 5) {
+              alert('Please enter a valid rating between 1 and 5.');
+              return;
+          }
+
+          // Fetch request to add the rating
+          fetch(`/detail_buku/book/${bookId}/give_rating/`, {
+              method: 'POST',
+              body: new URLSearchParams({ 'rating': rating }),
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'X-CSRFToken': '{{ csrf_token }}'
+              }
+          })
+          .then(function (response) {
+              return response.json();
+          })
+          .then(function (data) {
+              if (data.result === 'rating added') {
+                  // Update the displayed rating
+                  var ratingElement = document.querySelector('.book-info p:nth-child(7)');
+                  ratingElement.textContent = 'Rating: ' + data.new_rating.toFixed(2) + ' / ' + book.rating_count;
+              }
+          });
+      });
+
     });
-  });
-});
 </script>
+
 {% endblock content %}
