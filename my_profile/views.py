@@ -55,7 +55,7 @@ def get_reading_history_json(request):
         book_list = [buku_dibaca.buku for buku_dibaca in buku_dibaca_list]
         return HttpResponse(serializers.serialize('json', book_list))
     except ReadingHistory.DoesNotExist:
-        return HttpResponse('False', status=404, content_type='application/json')
+        return JsonResponse([], safe=False)
 
 @login_required
 def get_reading_history(request):
