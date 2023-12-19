@@ -8,6 +8,7 @@ from django.db import IntegrityError
 from .forms import ReviewForm, RatingForm
 from django.urls import reverse
 from django.contrib import messages
+from django.forms.models import model_to_dict
 
 @login_required
 def book_detail(request, book_id):
@@ -95,12 +96,15 @@ def show_json(request):
     reviews = Review.objects.all()
 
     # Serialize the reviews data to JSON
-    reviews_data = [{'book_id': review.book.id, 'user': review.user.username} for review in reviews]
+    reviews_data = [{'book_id': review.book.id, 'user': review.user.username, 'review': review.review} for review in reviews]
 
-    # Include likes count for each book
-    likes_count = {book.id: Like.objects.filter(book=book).count() for book in Book.objects.all()}
+    # Serialize the likes data to JSON
+    likes_data = [{'book_id': like.book.id, 'user': like.user.username, 'likes_count': like.likes_count} for like in Like.objects.all()]
 
-    # Include views count for each book
-    views_count = {book.id: View.objects.filter(book=book).count() for book in Book.objects.all()}
+    # Serialize the views data to JSON
+    views_data = [{'book_id': view.book.id, 'user': view.user.username} for view in View.objects.all()]
 
-    return JsonResponse({'reviews': reviews_data, 'likes_count': likes_count, 'views_count': views_count})
+    # Serialize the ratings data to JSON
+    ratings_data = [{'book_id': rating.book.id, 'user': rating.user.username, 'rating': rating.rating} for rating in Rating.objects.all()]
+
+    return JsonResponse({'reviews': reviews_data, 'likes': likes_data, 'views': views_data, 'ratings': ratings_data})

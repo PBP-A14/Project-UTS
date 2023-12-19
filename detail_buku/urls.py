@@ -8,5 +8,5 @@ urlpatterns = [
     path('book/<int:book_id>/like_book/', views.like_book, name='like_book'),
     path('book/<int:book_id>/add_review/', views.add_review, name='add_review'),
     path('book/<int:book_id>/give_rating/', views.give_rating, name='give_rating'),
-    path('book/<int:book_id>/json/', views.show_json, name='show_json'),
+    path('book/json/', views.show_json, name='show_json'),
 ]
