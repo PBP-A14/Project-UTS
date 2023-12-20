@@ -9,6 +9,8 @@ from .forms import ReviewForm, RatingForm
 from django.urls import reverse
 from django.contrib import messages
 from django.forms.models import model_to_dict
+import logging
+import json
 
 @login_required
 def book_detail(request, book_id):
@@ -112,16 +114,19 @@ def show_json(request):
 @csrf_exempt
 def give_rating_flutter(request, book_id):
     book = get_object_or_404(Book, id=book_id)
-    user = request.user
-
-    # Check if the user has already given a rating for this book
-    if Rating.objects.filter(book=book, user=user).exists():
-        return JsonResponse({'error': "You have already given a rating for this book."})
 
     if request.method == 'POST':
-        form = RatingForm(request.POST)
-        if form.is_valid():
-            rating = form.cleaned_data['rating']
+        try:
+            json_data = json.loads(request.body)
+            rating = json_data.get('rating')
+            if rating is None:
+                raise ValueError("Rating is required.")
+            rating = float(rating)
+
+            # Check if the user has already given a rating for this book
+            user = request.user
+            if Rating.objects.filter(book=book, user=user).exists():
+                return JsonResponse({'error': "You have already given a rating for this book."})
 
             # Calculate the updated rating
             new_rating = ((book.rating * book.rating_count) + rating) / (book.rating_count + 1)
@@ -135,8 +140,68 @@ def give_rating_flutter(request, book_id):
             Rating.objects.create(book=book, user=user, rating=rating)
 
             return JsonResponse({'success': "Rating added successfully."})
-        else:
-            # Form is not valid, return error message
-            return JsonResponse({'error': "Invalid rating value."})
+        except (json.JSONDecodeError, ValueError) as e:
+            return JsonResponse({'error': str(e)}, status=400)
     else:
-        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
+        return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@login_required
+def like_button_flutter(request, book_id):
+    if request.method == 'POST':
+        book = get_object_or_404(Book, id=book_id)
+        user = request.user
+
+        like, created = Like.objects.get_or_create(book=book, user=user)
+
+        if not created:
+            like.delete()
+            result = 'unliked'
+        else:
+            result = 'liked'
+
+        likes_count = Like.objects.filter(book=book).count()
+
+        return JsonResponse({'result': result, 'likes_count': likes_count})
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=405)
+
+@login_required
+def book_detail_json(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    
+    # Check if the user has viewed the book, and create a view record if not
+    if not View.objects.filter(book=book, user=request.user).exists():
+        View.objects.create(book=book, user=request.user)
+
+    # Retrieve likes count, views count, and reviews
+    likes_count = Like.objects.filter(book=book).count()
+    views_count = View.objects.filter(book=book).count()
+    reviews = [{'user': review.user.username, 'review': review.review} for review in Review.objects.filter(book=book)]
+
+    # Construct the response data
+    data = {
+        'likes_count': likes_count,
+        'views_count': views_count,
+        'reviews': reviews,
+    }
+
+    return JsonResponse(data)
+
+@csrf_exempt
+def add_review_flutter(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        form = ReviewForm(data)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.book = book
+            review.user = request.user
+            review.save()
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'errors': form.errors})
+    else:
+        form = ReviewForm()
+        return render(request, 'add_review.html', {'form': form})
+    

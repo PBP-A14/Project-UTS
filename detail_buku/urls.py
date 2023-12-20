@@ -9,5 +9,8 @@ urlpatterns = [
     path('book/<int:book_id>/add_review/', views.add_review, name='add_review'),
     path('book/<int:book_id>/give_rating/', views.give_rating, name='give_rating'),
     path('book/<int:book_id>/give_rating_flutter/', views.give_rating_flutter, name='give_rating_flutter'),
+    path('book/<int:book_id>/like_button_flutter/', views.like_button_flutter, name='like_button_flutter'),
+    path('book/<int:book_id>/book_detail_json/', views.book_detail_json, name='book_detail_json'),
+    path('book/<int:book_id>/add_review_flutter/', views.add_review_flutter, name='add_review_flutter'),
     path('book/json/', views.show_json, name='show_json'),
 ]
