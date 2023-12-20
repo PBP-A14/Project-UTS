@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from .models import Like, View, Review, Rating
-from home.models import Book
+from book.models import Book
 from django.db import IntegrityError
 from .forms import ReviewForm, RatingForm
 from django.urls import reverse
@@ -108,3 +108,35 @@ def show_json(request):
     ratings_data = [{'book_id': rating.book.id, 'user': rating.user.username, 'rating': rating.rating} for rating in Rating.objects.all()]
 
     return JsonResponse({'reviews': reviews_data, 'likes': likes_data, 'views': views_data, 'ratings': ratings_data})
+
+@csrf_exempt
+def give_rating_flutter(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    user = request.user
+
+    # Check if the user has already given a rating for this book
+    if Rating.objects.filter(book=book, user=user).exists():
+        return JsonResponse({'error': "You have already given a rating for this book."})
+
+    if request.method == 'POST':
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            rating = form.cleaned_data['rating']
+
+            # Calculate the updated rating
+            new_rating = ((book.rating * book.rating_count) + rating) / (book.rating_count + 1)
+
+            # Update the book instance in the database
+            book.rating = new_rating
+            book.rating_count += 1
+            book.save()
+
+            # Save the user's rating to prevent them from rating again
+            Rating.objects.create(book=book, user=user, rating=rating)
+
+            return JsonResponse({'success': "Rating added successfully."})
+        else:
+            # Form is not valid, return error message
+            return JsonResponse({'error': "Invalid rating value."})
+    else:
+        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)

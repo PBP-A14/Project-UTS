@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from home.models import Book
+from book.models import Book
 from django.contrib.auth.models import User
 
 class Like(models.Model):

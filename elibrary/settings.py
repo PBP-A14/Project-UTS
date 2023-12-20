@@ -50,7 +50,9 @@ INSTALLED_APPS = [
     'my_profile',
     'admin_app',
     'progress_literasi',
-    'detail_buku'
+    'detail_buku',
+    'corsheaders',
+    'book',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +65,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'elibrary.urls'
@@ -158,3 +161,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_COOKIE_AGE = 86400  # Satu hari (dalam detik)
 SESSION_SAVE_EVERY_REQUEST = True
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
+
+CSRF_TRUSTED_ORIGINS = ["https://elibrary-a14-tk.pbp.cs.ui.ac.id"]

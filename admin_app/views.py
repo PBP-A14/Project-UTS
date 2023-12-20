@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseNotFound, JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from home.models import Book
+from book.models import Book
 from admin_app.models import Log
 from django.db.models import Q
 from datetime import datetime
@@ -123,13 +123,13 @@ def delete_book(request, id):
     
 @csrf_exempt
 def delete_user(request, id):
-    if request.method == 'DELETE':
+    if request.method == 'DELETE' or request.method == 'POST':
         user = get_object_or_404(User, pk=id)
         log_desc = 'Deleted username: ' + user.username
         user.delete()
         new_log = Log(staff=request.user, category='Delete user', description=log_desc)
         new_log.save()
-        return JsonResponse({'message': 'User deleted successfully'})
+        return JsonResponse({"status": "success"}, status=200)
 
 @csrf_exempt    
 def delete_cookie(request):
@@ -149,3 +149,25 @@ def update_cookie(request):
         return response
     
     return JsonResponse({'message': 'Invalid request'}, status=400)
+
+@csrf_exempt
+def create_book_flutter(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        new_book = Book.objects.create(
+            title=data["title"], 
+            description=data["description"], 
+            authors=data["authors"], 
+            isbn=data["isbn"], 
+            num_pages=int(data["numPages"]), 
+            publisher=data["publisher"],
+            rating_count=0, 
+            rating=0.0
+        )
+
+        new_book.save()
+        
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)
