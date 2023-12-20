@@ -10,4 +10,11 @@ urlpatterns = [
     path('update_target/', views.update_target, name='update_target'),
     path('reset_target/', views.reset_target, name='reset_target'),
     path('read-book/<int:book_id>/', views.read_book, name='read_book'),
+    path('set_target_flutter/', views.set_target_flutter, name='set_target_flutter'),
+    path('show_json/', views.show_json, name='show_json'),
+    path('read-book-mobile/', views.read_book_mobile),
+    path('set_target_flutter/', views.set_target_flutter, name='set_target_flutter'),
+    path('show_json/', views.show_json, name='show_json'),
+    path('reset_mobile/', views.reset_target_mobile, name='reset_target_mobile'),
+    path('get_text_mobile/', views.get_text_mobile, name='get_text_mobile')
 ]
