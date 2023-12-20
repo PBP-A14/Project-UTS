@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'my_profile',
     'admin_app',
     'progress_literasi',
+    'detail_buku',
     'corsheaders',
     'book',
 ]

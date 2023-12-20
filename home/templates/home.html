@@ -144,6 +144,7 @@
                     <p class="card-text text-center">${rating}</p>
                     {% if request.user.is_authenticated %}
                     <button id="read_${item.pk}" class="btn btn-secondary">Read</button>
+                    <button style="margin-top: 10px;" id="detail_${item.pk}" class="btn btn-secondary">Detail</button>
                     {% endif %}
                 </div>
             </div>
@@ -157,6 +158,13 @@
                 window.location.href = "{% url 'progress_literasi:read_book' book_id=1 %}".replace(/1/, item.pk.toString());
             });
         });
+
+        // After the HTML string is added to the DOM
+        book.forEach((item) => {
+            document.getElementById(`detail_${item.pk}`).addEventListener("click", function () {
+                window.location.href = "{% url 'detail_buku:book_detail' book_id=1 %}".replace(/1/, item.pk.toString());
+            });
+        })
     }
 
 
