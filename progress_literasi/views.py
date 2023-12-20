@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import BukuDibaca, TargetHarian
+from .models import BukuDibaca
 from .forms import DailyTargetForm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
@@ -142,24 +142,6 @@ def read_book(request, book_id):
     return redirect('home:home')
 
 @csrf_exempt
-@login_required
-def set_target_flutter(request):
-    if request.method == 'POST':
-
-        data = json.loads(request.body)
-
-        new_target = TargetHarian.objects.create(
-           user = request.user,
-           target_buku = data['target_buku'], 
-        )
-
-        new_target.save()
-
-        return JsonResponse({"status": "success"}, status=200)
-    else:
-        return JsonResponse({"status": "error"}, status=401)
-
-@csrf_exempt
 def read_book_mobile(request):
     data = json.loads(request.body)
     user_id = data['user_id']
@@ -175,24 +157,94 @@ def read_book_mobile(request):
     return JsonResponse({'message':'Berhasil membaca buku'})
 
 @csrf_exempt
-@login_required
 def set_target_flutter(request):
     if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            target_buku = data.get('Target Buku')  # Adjust the key if needed
+            print('data:', data)
+            if target_buku is not None:
+                existing_target = UserProfile.objects.filter(user=request.user).first()
 
-        data = json.loads(request.body)
+                if existing_target:
+                    # Objek sudah ada, perbarui nilai target_buku
+                    existing_target.target_buku = target_buku
+                    existing_target.save()
+                else:
+                    # Objek belum ada, buat objek baru
+                    new_target = UserProfile.objects.create(
+                        user=request.user,
+                        target_buku=target_buku,
+                    )
+                    new_target.save()
 
-        new_target = TargetHarian.objects.create(
-           user = request.user,
-           target_buku = data['target_buku'], 
-        )
+                return JsonResponse({"status": "success"}, status=200)
+            else:
+                return JsonResponse({"status": "error", "message": "Invalid or missing 'Target Buku' key"}, status=400)
 
-        new_target.save()
+        except json.JSONDecodeError as e:
+            return JsonResponse({"status": "error", "message": "Invalid JSON data"}, status=400)
 
-        return JsonResponse({"status": "success"}, status=200)
+        except Exception as e:
+            return JsonResponse({"status": "error", "message": str(e)}, status=500)
+
     else:
-        return JsonResponse({"status": "error"}, status=401)
+        return JsonResponse({"status": "error", "message": "Invalid request method"}, status=405)
 
-@login_required
+@csrf_exempt
 def show_json(request):
-    data = TargetHarian.objects.filter(user=request.user)
-    return HttpResponse(serializers.serialize("json", data), content_type="application/json")
+    data = UserProfile.objects.filter(user=request.user.id)
+    serialized_data = serializers.serialize("json", data)
+    return HttpResponse(serialized_data, content_type="application/json")
+
+@csrf_exempt
+def reset_target_mobile(request):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+        user_profile.target_buku = 0
+        user_profile.save()
+        return JsonResponse({'success': True, 'message': 'Target harian berhasil direset.'})
+    except UserProfile.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Profil pengguna tidak ditemukan.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@csrf_exempt
+def get_text_mobile(request):
+    user = request.user
+    user_profile = None
+    target_buku = None
+    book_count = 0  
+
+    try:
+        user_profile = UserProfile.objects.get(user=user)
+        target_buku = user_profile.target_buku if user_profile else None
+    except UserProfile.DoesNotExist:
+        user_profile = None
+        target_buku = 0
+
+    try:
+        reading_history = ReadingHistory.objects.get(user=user)
+        book_count = reading_history.books.count() 
+    except ReadingHistory.DoesNotExist:
+        book_count = 0
+
+    selisih = target_buku - book_count if target_buku is not None else None
+
+    if target_buku is not None:
+        if target_buku == 0:
+            text_progress = "Segera tentukan target jelajahmu!"
+        elif book_count >= target_buku:
+            text_progress = "Selamat, proses jelajahmu sudah mencapai target!"
+        else:
+            if selisih is not None:
+                if selisih > 0:
+                    text_progress = f"Kamu harus membaca {selisih} buku untuk mencapai target jelajahmu!"
+                else:
+                    text_progress = "Ayo segera mulai petualangan imajinasimu melalui buku!"
+            else:
+                text_progress = "Segera tentukan target jelajahmu!"
+    else:
+        text_progress = "Segera tentukan target jelajahmu!"
+
+    return JsonResponse({'text_progress': text_progress})

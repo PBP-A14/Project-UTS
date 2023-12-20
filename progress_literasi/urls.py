@@ -15,4 +15,6 @@ urlpatterns = [
     path('read-book-mobile/', views.read_book_mobile),
     path('set_target_flutter/', views.set_target_flutter, name='set_target_flutter'),
     path('show_json/', views.show_json, name='show_json'),
+    path('reset_mobile/', views.reset_target_mobile, name='reset_target_mobile'),
+    path('get_text_mobile/', views.get_text_mobile, name='get_text_mobile')
 ]

@@ -8,6 +8,7 @@ from progress_literasi.models import BukuDibaca
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 @login_required
@@ -46,15 +47,15 @@ def user_profile(request):
 @login_required
 def get_reading_history_json(request):
     user = request.user
-    reading_history = ReadingHistory.objects.get(user=user)
-    
-    # Ambil semua objek BukuDibaca yang terkait dengan objek ReadingHistory
-    buku_dibaca_list = reading_history.books.all()
-
-    # Ambil objek Book yang terkait dengan setiap objek BukuDibaca
-    book_list = [buku_dibaca.buku for buku_dibaca in buku_dibaca_list]
-
-    return HttpResponse(serializers.serialize('json', book_list))
+    try:
+        reading_history = ReadingHistory.objects.get(user=user)
+        # Ambil semua objek BukuDibaca yang terkait dengan objek ReadingHistory
+        buku_dibaca_list = reading_history.books.all()
+        # Ambil objek Book yang terkait dengan setiap objek BukuDibaca
+        book_list = [buku_dibaca.buku for buku_dibaca in buku_dibaca_list]
+        return HttpResponse(serializers.serialize('json', book_list))
+    except ReadingHistory.DoesNotExist:
+        return JsonResponse([], safe=False)
 
 @login_required
 def get_reading_history(request):
@@ -77,3 +78,15 @@ def change_password(request):
             return JsonResponse({"success": "Password changed successfully"})
         else:
             return JsonResponse({"error": "Invalid password change request"}, status=400)
+        
+@csrf_exempt
+def change_password_mobile(request):
+    if request.method == "POST":
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Perbarui sesi autentikasi pengguna
+            update_session_auth_hash(request, user)
+            return JsonResponse({"success": "Password changed successfully", "status": True}, status=200)
+        else:
+            return JsonResponse({"error": "Invalid password change request", "status": False}, status=400)
