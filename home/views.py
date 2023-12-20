@@ -3,6 +3,7 @@ from django.core import serializers
 from django.http import HttpResponse
 from django.http import JsonResponse
 from book.models import Book
+from django.db.models import Q
 
 def home(request):
     return render(request, "home.html", {})
@@ -52,7 +53,11 @@ def sort_book(request):
 
 # Method untuk flutter
 def search(request, query):
-    books = Book.objects.filter(title__icontains=query)
+    books = Book.objects.filter(
+        Q(title__icontains=query) |
+        Q(authors__icontains=query) |
+        Q(publisher__icontains=query)
+    )
     data = [{'fields': {
         'title': book.title,
         'rating': book.rating,

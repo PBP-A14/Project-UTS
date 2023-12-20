@@ -62,6 +62,7 @@ def login_mobile(request):
                 "username": user.username,
                 "user_id":user.pk,
                 "status": True,
+                "is_admin": user.is_superuser,
                 "message": "Sign in success!"
                 # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
             }, status=200)
