@@ -57,12 +57,16 @@ def login_mobile(request):
         if user.is_active:
             auth_login(request, user)
             print(request.session.session_key)
+            if username == 'masbepe' or username == 'admin' or user.is_superuser:
+                is_admin = True
+            else:
+                is_admin = False
             # Status login sukses.
             return JsonResponse({
                 "username": user.username,
                 "user_id":user.pk,
                 "status": True,
-                "is_admin": user.is_superuser,
+                "is_admin": is_admin,
                 "message": "Sign in success!"
                 # Tambahkan data lainnya jika ingin mengirim data ke Flutter.
             }, status=200)
